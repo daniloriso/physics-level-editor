@@ -1,6 +1,6 @@
 package aurelienribon.leveleditor;
 
-import aurelienribon.leveleditor.models.AssetModel;
+import aurelienribon.leveleditor.models.AssetInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,39 +23,39 @@ public class AssetsManager {
 	// Content
 	// -------------------------------------------------------------------------
 
-	private final List<AssetModel> assets = new ArrayList<AssetModel>();
+	private final List<AssetInfo> assets = new ArrayList<AssetInfo>();
 
-	public List<AssetModel> getAssetsList() {
+	public List<AssetInfo> getAssetsList() {
 		return Collections.unmodifiableList(assets);
 	}
 
-	public AssetModel getAsset(int idx) {
+	public AssetInfo getAsset(int idx) {
 		assert 0 <= idx && idx < assets.size();
 		return assets.get(idx);
 	}
 
-	public void addAsset(AssetModel asset) {
+	public void addAsset(AssetInfo asset) {
 		assert asset != null;
 		assert !assets.contains(asset);
 		assets.add(asset);
-		List<AssetModel> list = new ArrayList<AssetModel>();
+		List<AssetInfo> list = new ArrayList<AssetInfo>();
 		list.add(asset);
 		list = Collections.unmodifiableList(list);
 		fireAssetsAdded(list);
 	}
 
-	public void addAssets(List<AssetModel> assets) {
-		for (AssetModel asset : assets) {
+	public void addAssets(List<AssetInfo> assets) {
+		for (AssetInfo asset : assets) {
 			assert !this.assets.contains(asset);
 			this.assets.add(asset);
 		}
-		List<AssetModel> list = new ArrayList<AssetModel>(assets);
+		List<AssetInfo> list = new ArrayList<AssetInfo>(assets);
 		list = Collections.unmodifiableList(list);
 		fireAssetsAdded(list);
 	}
 
 	public void removeAsset(int idx) {
-		List<AssetModel> list = new ArrayList<AssetModel>();
+		List<AssetInfo> list = new ArrayList<AssetInfo>();
 		assert 0 <= idx && idx < assets.size();
 		list.add(assets.remove(idx));
 		list = Collections.unmodifiableList(list);
@@ -65,7 +65,7 @@ public class AssetsManager {
 	public void removeAssets(int[] idxs) {
 		if (idxs.length == 0)
 			return;
-		List<AssetModel> list = new ArrayList<AssetModel>(assets);
+		List<AssetInfo> list = new ArrayList<AssetInfo>(assets);
 		Arrays.sort(idxs);
 		for (int i=idxs.length-1; i>=0; i--) {
 			int idx = idxs[i];
@@ -76,14 +76,14 @@ public class AssetsManager {
 		fireAssetsRemoved(list);
 	}
 
-	public void moveUp(AssetModel asset) {
+	public void moveUp(AssetInfo asset) {
 		assert assets.contains(asset);
 		int idx = assets.indexOf(asset);
 		if (idx > 0)
 			Collections.swap(assets, idx, idx-1);
 	}
 
-	public void moveDown(AssetModel asset) {
+	public void moveDown(AssetInfo asset) {
 		assert assets.contains(asset);
 		int idx = assets.indexOf(asset);
 		if (idx < assets.size()-1)
@@ -101,8 +101,8 @@ public class AssetsManager {
 	private final EventListenerList listeners = new EventListenerList();
 
 	public interface Listener extends EventListener {
-		public void assetsAdded(List<AssetModel> assets);
-		public void assetsRemoved(List<AssetModel> assets);
+		public void assetsAdded(List<AssetInfo> assets);
+		public void assetsRemoved(List<AssetInfo> assets);
 		public void assetsUpdated();
 	}
 
@@ -114,12 +114,12 @@ public class AssetsManager {
 		listeners.remove(Listener.class, listener);
 	}
 
-	private void fireAssetsAdded(List<AssetModel> assets) {
+	private void fireAssetsAdded(List<AssetInfo> assets) {
 		for (Listener listener : listeners.getListeners(Listener.class))
 			listener.assetsAdded(assets);
 	}
 
-	private void fireAssetsRemoved(List<AssetModel> assets) {
+	private void fireAssetsRemoved(List<AssetInfo> assets) {
 		for (Listener listener : listeners.getListeners(Listener.class))
 			listener.assetsRemoved(assets);
 	}

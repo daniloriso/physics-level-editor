@@ -42,7 +42,7 @@ public class MainWindow extends javax.swing.JFrame {
         layTitlePanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        layToggleVisBtn = new javax.swing.JButton();
+        objectsPanel1 = new aurelienribon.leveleditor.ui.ObjectsPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Physics Level Editor");
@@ -204,7 +204,7 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(layTitlePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 142, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 172, Short.MAX_VALUE)
                 .addComponent(jLabel4)
                 .addContainerGap())
         );
@@ -218,11 +218,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        layToggleVisBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_showHide.png"))); // NOI18N
-        layToggleVisBtn.setText("Toggle layer visibility");
-        layToggleVisBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        layToggleVisBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
-        layToggleVisBtn.setOpaque(false);
+        objectsPanel1.setOpaque(false);
 
         javax.swing.GroupLayout layersPanelLayout = new javax.swing.GroupLayout(layersPanel);
         layersPanel.setLayout(layersPanelLayout);
@@ -231,15 +227,15 @@ public class MainWindow extends javax.swing.JFrame {
             .addComponent(layTitlePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layersPanelLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addComponent(layToggleVisBtn)
-                .addContainerGap())
+                .addComponent(objectsPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
+                .addGap(10, 10, 10))
         );
         layersPanelLayout.setVerticalGroup(
             layersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layersPanelLayout.createSequentialGroup()
                 .addComponent(layTitlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 291, Short.MAX_VALUE)
-                .addComponent(layToggleVisBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(objectsPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -316,10 +312,10 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPanel layTitlePanel;
-    private javax.swing.JButton layToggleVisBtn;
     private javax.swing.JPanel layersPanel;
     private javax.swing.JLabel logoLbl;
     private javax.swing.JPanel mainPanel;
+    private aurelienribon.leveleditor.ui.ObjectsPanel objectsPanel1;
     private javax.swing.JPanel renderPanel;
     private javax.swing.JPanel sidePanel;
     // End of variables declaration//GEN-END:variables

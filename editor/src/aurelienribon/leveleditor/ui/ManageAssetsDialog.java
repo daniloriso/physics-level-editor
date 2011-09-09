@@ -1,6 +1,6 @@
 package aurelienribon.leveleditor.ui;
 
-import aurelienribon.leveleditor.models.AssetModel;
+import aurelienribon.leveleditor.models.AssetInfo;
 import aurelienribon.leveleditor.AssetsManager;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -38,11 +38,11 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 	};
 
 	private final AssetsManager.Listener listener = new AssetsManager.Listener() {
-		@Override public void assetsAdded(List<AssetModel> assets) {
+		@Override public void assetsAdded(List<AssetInfo> assets) {
 			reload();
 		}
 
-		@Override public void assetsRemoved(List<AssetModel> assets) {
+		@Override public void assetsRemoved(List<AssetInfo> assets) {
 			reload();
 		}
 
@@ -314,9 +314,9 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 		chooser.setMultiSelectionEnabled(true);
 		chooser.setFileFilter(new FileNameExtensionFilter("Image files", "jpg", "jpeg", "bmp", "png"));
 		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-			List<AssetModel> assets = new ArrayList<AssetModel>();
+			List<AssetInfo> assets = new ArrayList<AssetInfo>();
 			for (File file : chooser.getSelectedFiles())
-				assets.add(new AssetModel(file.getPath()));
+				assets.add(new AssetInfo(file.getPath()));
 			AssetsManager.instance().addAssets(assets);
 		}
 	}//GEN-LAST:event_infoAddAssetBtnActionPerformed
@@ -351,7 +351,7 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 			infoSizeLbl.setText("---");
 			infoPreviewPanel.clearImage();
 		} else if (idxs.length == 1) {
-			AssetModel asset = AssetsManager.instance().getAsset(idxs[0]);
+			AssetInfo asset = AssetsManager.instance().getAsset(idxs[0]);
 			infoNameLbl.setText(asset.getName());
 			infoPathLbl.setText(asset.getPath());
 			infoDimensionsLbl.setText(asset.getWidth() + " x " + asset.getHeight());
@@ -391,7 +391,7 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 
 	private void reload() {
 		assetsListModel.clear();
-		for (AssetModel asset : AssetsManager.instance().getAssetsList())
+		for (AssetInfo asset : AssetsManager.instance().getAssetsList())
 			assetsListModel.addElement(asset.getPath());
 	}
 }
