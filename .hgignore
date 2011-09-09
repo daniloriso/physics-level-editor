@@ -1,0 +1,7 @@
+syntax: glob
+
+editor/manifest.mf
+editor/nbbuild.xml
+editor/nbproject/*
+editor/build/*
+editor/dist/*
