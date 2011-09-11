@@ -56,4 +56,8 @@ public class TextWriter {
 	public void setColor(Color color) {
 		font.setColor(color);
 	}
+
+	public float stringWidth(String txt) {
+		return font.getBounds(txt).width;
+	}
 }

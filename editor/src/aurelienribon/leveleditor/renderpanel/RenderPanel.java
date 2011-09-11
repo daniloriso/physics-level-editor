@@ -23,15 +23,13 @@ public class RenderPanel implements ApplicationListener {
 		GL10 gl = Gdx.gl10;
 		gl.glClearColor(0.95f, 0.95f, 0.95f, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		renderer.render();
+		renderer.render(gl);
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		Gdx.gl.glViewport(0, 0, width, height);
-		renderer.camera.viewportWidth = width;
-		renderer.camera.viewportHeight = height;
-		renderer.camera.update();
+		renderer.setWorldViewportUniform();
 	}
 
 	@Override

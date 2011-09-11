@@ -40,6 +40,8 @@ public abstract class Renderer2D {
 	 * @param metersY The world viewport height.
 	 */
 	public void setWorldViewport(float metersX, float metersY) {
+		screenSizePixels.x = Gdx.graphics.getWidth();
+		screenSizePixels.y = Gdx.graphics.getHeight();
 		screenSizeMeters.set(metersX, metersY);
 		updateViewport();
 	}
@@ -48,6 +50,8 @@ public abstract class Renderer2D {
 	 * Changes the world viewport with a uniform pixels per meter ratio.
 	 */
 	public void setWorldViewportUniform() {
+		screenSizePixels.x = Gdx.graphics.getWidth();
+		screenSizePixels.y = Gdx.graphics.getHeight();
 		float pxRatio = screenSizePixels.x / screenSizePixels.y;
 		float mtRatio = screenSizeMeters.x / screenSizeMeters.y;
 
@@ -65,6 +69,8 @@ public abstract class Renderer2D {
 	 * Will try to fill the screen.
 	 */
 	public void setWorldViewportUniformToFill() {
+		screenSizePixels.x = Gdx.graphics.getWidth();
+		screenSizePixels.y = Gdx.graphics.getHeight();
 		float pxRatio = screenSizePixels.x / screenSizePixels.y;
 		float mtRatio = screenSizeMeters.x / screenSizeMeters.y;
 
