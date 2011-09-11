@@ -1,55 +1,30 @@
 package aurelienribon.leveleditor.ui;
 
-import aurelienribon.leveleditor.models.AssetInfo;
 import aurelienribon.leveleditor.AssetsManager;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import aurelienribon.leveleditor.models.AssetInfo;
+import aurelienribon.utils.MutableListModel;
+import java.awt.Component;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
+import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com
  */
 public class ManageAssetsDialog extends javax.swing.JDialog {
-	private final DefaultListModel assetsListModel = new DefaultListModel();
+	private static final ImageIcon assetIcon = new ImageIcon(ManageObjectsPanel.class.getResource("gfx/ic_texture.png"));
 
 	public ManageAssetsDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
-
-		assetsList.setModel(assetsListModel);
-		reload();
-		addWindowListener(wndListener);
+		assetsList.setModel(new MutableListModel(AssetsManager.instance()));
+		assetsList.setCellRenderer(listCellRdr);
 	}
-
-	private final WindowListener wndListener = new WindowAdapter() {
-		@Override public void windowOpened(WindowEvent e) {
-			AssetsManager.instance().addListener(listener);
-		}
-
-		@Override public void windowClosing(WindowEvent e) {
-			AssetsManager.instance().removeListener(listener);
-		}
-	};
-
-	private final AssetsManager.Listener listener = new AssetsManager.Listener() {
-		@Override public void assetsAdded(List<AssetInfo> assets) {
-			reload();
-		}
-
-		@Override public void assetsRemoved(List<AssetInfo> assets) {
-			reload();
-		}
-
-		@Override public void assetsUpdated() {
-			reload();
-		}
-	};
 
 	@SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -70,7 +45,7 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         infoNameLbl = new javax.swing.JLabel();
-        infoPathLbl = new javax.swing.JLabel();
+        infoPathField = new javax.swing.JTextField();
         infoDimensionsLbl = new javax.swing.JLabel();
         infoSizeLbl = new javax.swing.JLabel();
         infoAddAssetBtn = new javax.swing.JButton();
@@ -171,8 +146,8 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
                 .addComponent(ctrlMoveBottomBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ctrlDeleteBtn)
-                .addContainerGap(265, Short.MAX_VALUE))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
+                .addContainerGap(259, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
         );
 
         getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
@@ -201,14 +176,26 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
         infoNameLbl.setForeground(Theme.MAIN_FOREGROUND);
         infoNameLbl.setText("---");
 
-        infoPathLbl.setForeground(Theme.MAIN_FOREGROUND);
-        infoPathLbl.setText("---");
+        infoPathField.setBackground(Theme.TEXTAREA_BACKGROUND);
+        infoPathField.setForeground(Theme.TEXTAREA_FOREGROUND);
+        infoPathField.setText("---");
 
         infoDimensionsLbl.setForeground(Theme.MAIN_FOREGROUND);
         infoDimensionsLbl.setText("---");
 
         infoSizeLbl.setForeground(Theme.MAIN_FOREGROUND);
         infoSizeLbl.setText("---");
+
+        infoAddAssetBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_add.png"))); // NOI18N
+        infoAddAssetBtn.setText("Add assets");
+        infoAddAssetBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        infoAddAssetBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        infoAddAssetBtn.setOpaque(false);
+        infoAddAssetBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                infoAddAssetBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -224,16 +211,20 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(infoPathLbl))
+                        .addComponent(infoPathField, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(infoDimensionsLbl))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(infoSizeLbl)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(infoDimensionsLbl))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(infoSizeLbl)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 263, Short.MAX_VALUE)
+                        .addComponent(infoAddAssetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -245,7 +236,7 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(infoPathLbl))
+                    .addComponent(infoPathField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -255,18 +246,11 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
                     .addComponent(jLabel3)
                     .addComponent(infoSizeLbl))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(66, Short.MAX_VALUE)
+                .addComponent(infoAddAssetBtn)
+                .addContainerGap())
         );
-
-        infoAddAssetBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_add.png"))); // NOI18N
-        infoAddAssetBtn.setText("Add assets");
-        infoAddAssetBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        infoAddAssetBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
-        infoAddAssetBtn.setOpaque(false);
-        infoAddAssetBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                infoAddAssetBtnActionPerformed(evt);
-            }
-        });
 
         infoPreviewPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 1, Theme.SEPARATOR));
 
@@ -278,7 +262,7 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
         );
         infoPreviewPanelLayout.setVerticalGroup(
             infoPreviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 94, Short.MAX_VALUE)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout infoPanelLayout = new javax.swing.GroupLayout(infoPanel);
@@ -288,19 +272,12 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
             .addGroup(infoPanelLayout.createSequentialGroup()
                 .addComponent(infoPreviewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 253, Short.MAX_VALUE)
-                .addComponent(infoAddAssetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         infoPanelLayout.setVerticalGroup(
             infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(infoPreviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoPanelLayout.createSequentialGroup()
-                .addContainerGap(60, Short.MAX_VALUE)
-                .addComponent(infoAddAssetBtn)
-                .addContainerGap())
         );
 
         getContentPane().add(infoPanel, java.awt.BorderLayout.SOUTH);
@@ -314,52 +291,81 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 		chooser.setMultiSelectionEnabled(true);
 		chooser.setFileFilter(new FileNameExtensionFilter("Image files", "jpg", "jpeg", "bmp", "png"));
 		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-			List<AssetInfo> assets = new ArrayList<AssetInfo>();
-			for (File file : chooser.getSelectedFiles())
-				assets.add(new AssetInfo(file.getPath()));
-			AssetsManager.instance().addAssets(assets);
+			for (File file : chooser.getSelectedFiles()) {
+				AssetInfo info = new AssetInfo(file.getPath());
+				AssetsManager.instance().add(info);
+			}
 		}
 	}//GEN-LAST:event_infoAddAssetBtnActionPerformed
 
 	private void ctrlMoveTopBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlMoveTopBtnActionPerformed
-		// TODO add your handling code here:
+		Object[] os = assetsList.getSelectedValues();
+		for (int i=os.length-1; i>=0; i--) {
+			AssetInfo asset = (AssetInfo)os[i];
+			AssetsManager.instance().remove(asset);
+			AssetsManager.instance().add(0, asset);
+		}
+		select(os);
 	}//GEN-LAST:event_ctrlMoveTopBtnActionPerformed
 
 	private void ctrlMoveUpBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlMoveUpBtnActionPerformed
-		// TODO add your handling code here:
+		Object[] os = assetsList.getSelectedValues();
+		for (int i=os.length-1; i>=0; i--) {
+			AssetInfo asset = (AssetInfo)os[i];
+			int idx = AssetsManager.instance().indexOf(asset);
+			AssetsManager.instance().remove(asset);
+			AssetsManager.instance().add(idx > 0 ? idx-1 : 0, asset);
+		}
+		select(os);
 	}//GEN-LAST:event_ctrlMoveUpBtnActionPerformed
 
 	private void ctrlMoveDownBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlMoveDownBtnActionPerformed
-		// TODO add your handling code here:
+		Object[] os = assetsList.getSelectedValues();
+		int size = AssetsManager.instance().size();
+		for (int i=os.length-1; i>=0; i--) {
+			AssetInfo asset = (AssetInfo)os[i];
+			int idx = AssetsManager.instance().indexOf(asset);
+			AssetsManager.instance().remove(asset);
+			AssetsManager.instance().add(idx < size-1 ? idx+1 : size-1, asset);
+		}
+		select(os);
 	}//GEN-LAST:event_ctrlMoveDownBtnActionPerformed
 
 	private void ctrlMoveBottomBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlMoveBottomBtnActionPerformed
-		// TODO add your handling code here:
+		Object[] os = assetsList.getSelectedValues();
+		int size = AssetsManager.instance().size();
+		for (int i=0, n=os.length; i<n; i++) {
+			AssetInfo asset = (AssetInfo)os[i];
+			AssetsManager.instance().remove(asset);
+			AssetsManager.instance().add(size-1, asset);
+		}
+		select(os);
 	}//GEN-LAST:event_ctrlMoveBottomBtnActionPerformed
 
 	private void ctrlDeleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlDeleteBtnActionPerformed
 		int[] idxs = assetsList.getSelectedIndices();
-		AssetsManager.instance().removeAssets(idxs);
+		for (int i=idxs.length-1; i>=0; i--)
+			AssetsManager.instance().remove(idxs[i]);
 	}//GEN-LAST:event_ctrlDeleteBtnActionPerformed
 
 	private void assetsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_assetsListValueChanged
 		int[] idxs = assetsList.getSelectedIndices();
 		if (idxs.length == 0) {
 			infoNameLbl.setText("---");
-			infoPathLbl.setText("---");
+			infoPathField.setText("---");
 			infoDimensionsLbl.setText("---");
 			infoSizeLbl.setText("---");
 			infoPreviewPanel.clearImage();
 		} else if (idxs.length == 1) {
-			AssetInfo asset = AssetsManager.instance().getAsset(idxs[0]);
+			AssetInfo asset = AssetsManager.instance().get(idxs[0]);
 			infoNameLbl.setText(asset.getName());
-			infoPathLbl.setText(asset.getPath());
+			infoPathField.setText(asset.getPath());
 			infoDimensionsLbl.setText(asset.getWidth() + " x " + asset.getHeight());
 			infoSizeLbl.setText(asset.getSize() + " kB");
 			infoPreviewPanel.setImage(asset.getImage());
 		} else {
 			infoNameLbl.setText("---");
-			infoPathLbl.setText("---");
+			infoPathField.setText("---");
 			infoDimensionsLbl.setText("---");
 			infoSizeLbl.setText("---");
 			infoPreviewPanel.clearImage();
@@ -377,7 +383,7 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
     private javax.swing.JLabel infoDimensionsLbl;
     private javax.swing.JLabel infoNameLbl;
     private javax.swing.JPanel infoPanel;
-    private javax.swing.JLabel infoPathLbl;
+    private javax.swing.JTextField infoPathField;
     private aurelienribon.leveleditor.ui.ImagePanel infoPreviewPanel;
     private javax.swing.JLabel infoSizeLbl;
     private javax.swing.JLabel jLabel1;
@@ -389,9 +395,32 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
     private javax.swing.JPanel mainPanel;
     // End of variables declaration//GEN-END:variables
 
-	private void reload() {
-		assetsListModel.clear();
-		for (AssetInfo asset : AssetsManager.instance().getAssetsList())
-			assetsListModel.addElement(asset.getPath());
+	private final ListCellRenderer listCellRdr = new ListCellRenderer() {
+		@Override public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			JLabel label = new JLabel();
+			label.setBorder(new EmptyBorder(2, 5, 2, 5));
+			label.setIcon(assetIcon);
+			label.setText(((AssetInfo)value).getPath());
+
+			if (isSelected) {
+				label.setBackground(Theme.MAIN_BACKGROUND);
+				label.setForeground(Theme.MAIN_FOREGROUND);
+				label.setOpaque(true);
+			} else {
+				label.setForeground(Theme.TEXTAREA_FOREGROUND);
+				label.setOpaque(false);
+			}
+
+			return label;
+		}
+	};
+
+	private void select(Object[] assets) {
+		if (assets.length > 0) {
+			int[] idxs = new int[assets.length];
+			for (int i=0, n=idxs.length; i<n; i++)
+				idxs[i] = AssetsManager.instance().indexOf((AssetInfo)assets[i]);
+			assetsList.setSelectedIndices(idxs);
+		}
 	}
 }

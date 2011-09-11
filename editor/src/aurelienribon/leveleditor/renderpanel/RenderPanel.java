@@ -4,6 +4,9 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 
+/**
+ * @author Aurelien Ribon | http://www.aurelienribon.com
+ */
 public class RenderPanel implements ApplicationListener {
 	private Renderer renderer;
 
@@ -18,8 +21,9 @@ public class RenderPanel implements ApplicationListener {
 	@Override
 	public void render() {
 		GL10 gl = Gdx.gl10;
-		gl.glClearColor(0.90f, 0.90f, 0.90f, 1);
+		gl.glClearColor(0.95f, 0.95f, 0.95f, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		renderer.render();
 	}
 
 	@Override

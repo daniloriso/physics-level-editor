@@ -1,29 +1,69 @@
 package aurelienribon.leveleditor.models;
 
+import aurelienribon.leveleditor.models.behaviors.Hideable;
+import aurelienribon.leveleditor.models.behaviors.Renameable;
+import aurelienribon.utils.ChangeListener;
+import aurelienribon.utils.Changeable;
+import aurelienribon.utils.ObservableList;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class LayerModel {
-	private final List<AssetModel> assets = new ArrayList<AssetModel>();
-	private String name;
+public class LayerModel extends ObservableList<ObservableList> implements Changeable, Renameable, Hideable {
+	// -------------------------------------------------------------------------
+	// Changeable impl.
+	// -------------------------------------------------------------------------
 
-	public LayerModel(String name) {
-		this.name = name;
+	private final List<ChangeListener> changeListeners = new ArrayList<ChangeListener>(3);
+
+	@Override
+	public void addPropertyChangeListener(ChangeListener l) {
+		changeListeners.add(l);
 	}
 
+	@Override
+	public void removePropertyChangeListener(ChangeListener l) {
+		changeListeners.add(l);
+	}
+
+	private void firePropertyChanged(String propertyName) {
+		for (ChangeListener listener : changeListeners)
+			listener.propertyChanged(this, propertyName);
+	}
+
+	// -------------------------------------------------------------------------
+	// Renameable impl.
+	// -------------------------------------------------------------------------
+
+	private String name = "<unamed>";
+
+	@Override
 	public String getName() {
 		return name;
 	}
 
-	public List<AssetModel> getAssetsList() {
-		return Collections.unmodifiableList(assets);
+	@Override
+	public void setName(String name) {
+		this.name = name;
+		firePropertyChanged("name");
 	}
 
-	public int getAssetsCount() {
-		return assets.size();
+	// -------------------------------------------------------------------------
+	// Hideable impl.
+	// -------------------------------------------------------------------------
+
+	private boolean visible = true;
+
+	@Override
+	public boolean isVisible() {
+		return visible;
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+		firePropertyChanged("visible");
 	}
 }

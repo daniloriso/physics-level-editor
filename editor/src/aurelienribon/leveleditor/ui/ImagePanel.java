@@ -14,6 +14,9 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+/**
+ * @author Aurelien Ribon | http://www.aurelienribon.com
+ */
 public class ImagePanel extends JPanel {
 	private BufferedImage background;
 	private BufferedImage image;
@@ -30,6 +33,7 @@ public class ImagePanel extends JPanel {
 
 	public void clearImage() {
 		image = null;
+		repaint();
 	}
 
 	public void setImage(BufferedImage img) {

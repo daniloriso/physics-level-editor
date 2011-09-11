@@ -1,9 +1,13 @@
 
 import aurelienribon.leveleditor.AppManager;
+import aurelienribon.leveleditor.AssetsManager;
+import aurelienribon.leveleditor.models.AssetInfo;
 import aurelienribon.leveleditor.ui.MainWindow;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -37,7 +41,19 @@ public class Main {
 				);
 				mw.setLocationRelativeTo(null);
 				mw.setVisible(true);
+
+				debug();
 			}
 		});
+	}
+
+	private static void debug() {
+		try {
+			AssetsManager.instance().add(new AssetInfo(new File("data/hero.png").getCanonicalPath()));
+			AssetsManager.instance().add(new AssetInfo(new File("data/sun.png").getCanonicalPath()));
+			AssetsManager.instance().add(new AssetInfo(new File("data/platform1.png").getCanonicalPath()));
+			AssetsManager.instance().add(new AssetInfo(new File("data/platform2.png").getCanonicalPath()));
+		} catch (IOException ex) {
+		}
 	}
 }
