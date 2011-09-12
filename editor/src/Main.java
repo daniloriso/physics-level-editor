@@ -3,9 +3,12 @@ import aurelienribon.leveleditor.AppManager;
 import aurelienribon.leveleditor.AssetsManager;
 import aurelienribon.leveleditor.models.AssetInfo;
 import aurelienribon.leveleditor.ui.MainWindow;
+import aurelienribon.leveleditor.utils.AssetLoader;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.SwingUtilities;
@@ -42,18 +45,19 @@ public class Main {
 				mw.setLocationRelativeTo(null);
 				mw.setVisible(true);
 
-				debug();
+				debug(mw);
 			}
 		});
 	}
 
-	private static void debug() {
-		try {
-			AssetsManager.instance().add(new AssetInfo(new File("data/hero.png").getCanonicalPath()));
-			AssetsManager.instance().add(new AssetInfo(new File("data/sun.png").getCanonicalPath()));
-			AssetsManager.instance().add(new AssetInfo(new File("data/platform1.png").getCanonicalPath()));
-			AssetsManager.instance().add(new AssetInfo(new File("data/platform2.png").getCanonicalPath()));
-		} catch (IOException ex) {
-		}
+	private static void debug(MainWindow mw) {
+		mw.addWindowListener(new WindowAdapter() {
+			@Override public void windowOpened(WindowEvent e) {
+				AssetsManager.instance().add(AssetLoader.getAssetInfo("data/hero.png"));
+				AssetsManager.instance().add(AssetLoader.getAssetInfo("data/sun.png"));
+				AssetsManager.instance().add(AssetLoader.getAssetInfo("data/platform1.png"));
+				AssetsManager.instance().add(AssetLoader.getAssetInfo("data/platform2.png"));
+			}
+		});
 	}
 }

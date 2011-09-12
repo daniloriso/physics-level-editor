@@ -1,7 +1,7 @@
 package aurelienribon.leveleditor.ui;
 
 import aurelienribon.leveleditor.LayersManager;
-import aurelienribon.leveleditor.models.AssetModel;
+import aurelienribon.leveleditor.models.SpriteModel;
 import aurelienribon.leveleditor.models.LayerModel;
 import aurelienribon.leveleditor.models.behaviors.Hideable;
 import aurelienribon.leveleditor.models.behaviors.Renameable;
@@ -293,8 +293,8 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 				LayerModel layer = (LayerModel)value;
 				label.setIcon(layerIcon);
 				label.setText(layer.getName());
-			} else if (value instanceof AssetModel) {
-				AssetModel asset = (AssetModel)value;
+			} else if (value instanceof SpriteModel) {
+				SpriteModel asset = (SpriteModel)value;
 				label.setIcon(assetIcon);
 				label.setText(asset.getName());
 			}

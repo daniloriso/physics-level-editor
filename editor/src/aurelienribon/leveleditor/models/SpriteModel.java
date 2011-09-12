@@ -1,7 +1,11 @@
 package aurelienribon.leveleditor.models;
 
+import aurelienribon.leveleditor.models.behaviors.Drawable;
 import aurelienribon.leveleditor.models.behaviors.Hideable;
+import aurelienribon.leveleditor.models.behaviors.Positionable;
 import aurelienribon.leveleditor.models.behaviors.Renameable;
+import aurelienribon.leveleditor.models.behaviors.Resizable;
+import aurelienribon.leveleditor.models.behaviors.Rotatable;
 import aurelienribon.utils.ChangeListener;
 import aurelienribon.utils.Changeable;
 import aurelienribon.utils.ObservableList;
@@ -11,42 +15,42 @@ import java.util.List;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class AssetModel extends ObservableList<ObservableList> implements Changeable, Renameable, Hideable {
-	private final AssetInfo info;
-	private float x;
-	private float y;
-	private float width;
-	private float height;
-	private float rotation;
+public class SpriteModel extends ObservableList<SpriteChild>
+	implements LayerChild, Drawable, Positionable, Resizable, Rotatable, Changeable, Renameable, Hideable {
 
-	public AssetModel(AssetInfo info) {
+	public SpriteModel(AssetInfo info) {
 		this.info = info;
 	}
 
-	public AssetInfo getInfo() {
+	// -------------------------------------------------------------------------
+	// Drawable impl.
+	// -------------------------------------------------------------------------
+
+	private final AssetInfo info;
+
+	@Override
+	public AssetInfo getAsset() {
 		return info;
 	}
 
+	// -------------------------------------------------------------------------
+	// Positionable impl.
+	// -------------------------------------------------------------------------
+
+	private float x;
+	private float y;
+
+	@Override
 	public float getX() {
 		return x;
 	}
 
+	@Override
 	public float getY() {
 		return y;
 	}
 
-	public float getWidth() {
-		return width;
-	}
-
-	public float getHeight() {
-		return height;
-	}
-
-	public float getRotation() {
-		return rotation;
-	}
-
+	@Override
 	public void setPosition(float x, float y) {
 		this.x = x;
 		this.y = y;
@@ -54,6 +58,24 @@ public class AssetModel extends ObservableList<ObservableList> implements Change
 		firePropertyChanged("y");
 	}
 
+	// -------------------------------------------------------------------------
+	// Resizable impl.
+	// -------------------------------------------------------------------------
+
+	private float width;
+	private float height;
+
+	@Override
+	public float getWidth() {
+		return width;
+	}
+
+	@Override
+	public float getHeight() {
+		return height;
+	}
+
+	@Override
 	public void setSize(float w, float h) {
 		this.width = w;
 		this.height = h;
@@ -61,6 +83,18 @@ public class AssetModel extends ObservableList<ObservableList> implements Change
 		firePropertyChanged("height");
 	}
 
+	// -------------------------------------------------------------------------
+	// Rotatable impl.
+	// -------------------------------------------------------------------------
+
+	private float rotation;
+
+	@Override
+	public float getRotation() {
+		return rotation;
+	}
+
+	@Override
 	public void setRotation(float rotation) {
 		this.rotation = rotation;
 		firePropertyChanged("rotation");
@@ -73,12 +107,12 @@ public class AssetModel extends ObservableList<ObservableList> implements Change
 	private final List<ChangeListener> changeListeners = new ArrayList<ChangeListener>(3);
 
 	@Override
-	public void addPropertyChangeListener(ChangeListener l) {
+	public void addChangeListener(ChangeListener l) {
 		changeListeners.add(l);
 	}
 
 	@Override
-	public void removePropertyChangeListener(ChangeListener l) {
+	public void removeChangeListener(ChangeListener l) {
 		changeListeners.add(l);
 	}
 

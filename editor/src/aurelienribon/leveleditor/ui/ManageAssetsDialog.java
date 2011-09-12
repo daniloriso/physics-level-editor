@@ -2,9 +2,13 @@ package aurelienribon.leveleditor.ui;
 
 import aurelienribon.leveleditor.AssetsManager;
 import aurelienribon.leveleditor.models.AssetInfo;
+import aurelienribon.leveleditor.utils.AssetLoader;
 import aurelienribon.utils.MutableListModel;
 import java.awt.Component;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -17,7 +21,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author Aurelien Ribon | http://www.aurelienribon.com
  */
 public class ManageAssetsDialog extends javax.swing.JDialog {
-	private static final ImageIcon assetIcon = new ImageIcon(ManageObjectsPanel.class.getResource("gfx/ic_texture.png"));
+	private final ImageIcon assetIcon = new ImageIcon(ManageObjectsPanel.class.getResource("gfx/ic_texture.png"));
 
 	public ManageAssetsDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
@@ -292,7 +296,7 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 		chooser.setFileFilter(new FileNameExtensionFilter("Image files", "jpg", "jpeg", "bmp", "png"));
 		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 			for (File file : chooser.getSelectedFiles()) {
-				AssetInfo info = new AssetInfo(file.getPath());
+				AssetInfo info = AssetLoader.getAssetInfo(file.getPath());
 				AssetsManager.instance().add(info);
 			}
 		}
@@ -361,8 +365,8 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 			infoNameLbl.setText(asset.getName());
 			infoPathField.setText(asset.getPath());
 			infoDimensionsLbl.setText(asset.getWidth() + " x " + asset.getHeight());
-			infoSizeLbl.setText(asset.getSize() + " kB");
-			infoPreviewPanel.setImage(asset.getImage());
+			infoSizeLbl.setText(asset.getFileSize() + " kB");
+			infoPreviewPanel.setImage(AssetLoader.getAssetImage(asset));
 		} else {
 			infoNameLbl.setText("---");
 			infoPathField.setText("---");

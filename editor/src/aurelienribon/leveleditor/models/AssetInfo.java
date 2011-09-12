@@ -1,51 +1,29 @@
 package aurelienribon.leveleditor.models;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class AssetInfo {
-	private final File file;
-	private final BufferedImage img;
+	private final String name;
+	private final String path;
 	private final int width;
 	private final int height;
-	private final int size;
+	private final int fileSize;
 
-	public AssetInfo(String path) {
-		file = new File(path);
-		size = (int) (file.length() / 1000L);
-
-		BufferedImage tmp = null;
-		try {
-			tmp = ImageIO.read(file);
-		} catch (IOException ex) {
-		}
-
-		if (tmp != null) {
-			img = tmp;
-			width = tmp.getWidth();
-			height = tmp.getHeight();
-		} else {
-			img = null;
-			width = -1;
-			height = -1;
-		}
+	public AssetInfo(String name, String path, int width, int height, int fileSize) {
+		this.name = name;
+		this.path = path;
+		this.width = width;
+		this.height = height;
+		this.fileSize = fileSize;
 	}
 
 	public String getName() {
-		return file.getName();
+		return name;
 	}
 
 	public String getPath() {
-		return file.getPath();
-	}
-
-	public BufferedImage getImage() {
-		return img;
+		return path;
 	}
 
 	public int getWidth() {
@@ -56,7 +34,11 @@ public class AssetInfo {
 		return height;
 	}
 
-	public int getSize() {
-		return size;
+	public float getSizeRatio() {
+		return (float)width/(float)height;
+	}
+
+	public int getFileSize() {
+		return fileSize;
 	}
 }

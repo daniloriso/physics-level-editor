@@ -18,7 +18,7 @@ public class MutableListModel implements ListModel {
 
 		for (Object elem : model.getAll())
 			if (elem instanceof Changeable)
-				((Changeable)elem).addPropertyChangeListener(elemChangeListener);
+				((Changeable)elem).addChangeListener(elemChangeListener);
 	}
 
 	@Override
@@ -72,14 +72,14 @@ public class MutableListModel implements ListModel {
 		public void elementAdded(Object source, int idx, Object elem) {
 			fireIntervalAdded(idx, idx);
 			if (elem instanceof Changeable)
-				((Changeable)elem).addPropertyChangeListener(elemChangeListener);
+				((Changeable)elem).addChangeListener(elemChangeListener);
 		}
 
 		@Override
 		public void elementRemoved(Object source, int idx, Object elem) {
 			fireIntervalRemoved(idx, idx);
 			if (elem instanceof Changeable)
-				((Changeable)elem).removePropertyChangeListener(elemChangeListener);
+				((Changeable)elem).removeChangeListener(elemChangeListener);
 		}
 	};
 

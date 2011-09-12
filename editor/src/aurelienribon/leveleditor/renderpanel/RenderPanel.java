@@ -8,10 +8,11 @@ import com.badlogic.gdx.graphics.GL10;
  * @author Aurelien Ribon | http://www.aurelienribon.com
  */
 public class RenderPanel implements ApplicationListener {
-	private Renderer renderer;
+	private MainRenderer renderer;
 
 	@Override public void create() {
-		this.renderer = new Renderer();
+		this.renderer = new MainRenderer();
+		Gdx.input.setInputProcessor(new InputProcessor(renderer));
 	}
 
 	@Override
@@ -20,6 +21,7 @@ public class RenderPanel implements ApplicationListener {
 
 	@Override
 	public void render() {
+		renderer.update();
 		GL10 gl = Gdx.gl10;
 		gl.glClearColor(0.95f, 0.95f, 0.95f, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);

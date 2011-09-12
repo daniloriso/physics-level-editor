@@ -95,7 +95,7 @@ public class MutableTreeModel implements TreeModel {
 		pathsMap.put(child, childPath);
 
 		if (child instanceof Changeable)
-			((Changeable)child).addPropertyChangeListener(elemChangeListener);
+			((Changeable)child).addChangeListener(elemChangeListener);
 
 		if (child instanceof ObservableList) {
 			ObservableList list = (ObservableList)child;
@@ -110,7 +110,7 @@ public class MutableTreeModel implements TreeModel {
 		pathsMap.remove(elem);
 
 		if (elem instanceof Changeable)
-			((Changeable)elem).removePropertyChangeListener(elemChangeListener);
+			((Changeable)elem).removeChangeListener(elemChangeListener);
 
 		if (elem instanceof ObservableList) {
 			ObservableList list = (ObservableList)elem;

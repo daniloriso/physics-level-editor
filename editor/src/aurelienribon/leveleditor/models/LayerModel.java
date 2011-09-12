@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class LayerModel extends ObservableList<ObservableList> implements Changeable, Renameable, Hideable {
+public class LayerModel extends ObservableList<LayerChild> implements Changeable, Renameable, Hideable {
 	// -------------------------------------------------------------------------
 	// Changeable impl.
 	// -------------------------------------------------------------------------
@@ -19,12 +19,12 @@ public class LayerModel extends ObservableList<ObservableList> implements Change
 	private final List<ChangeListener> changeListeners = new ArrayList<ChangeListener>(3);
 
 	@Override
-	public void addPropertyChangeListener(ChangeListener l) {
+	public void addChangeListener(ChangeListener l) {
 		changeListeners.add(l);
 	}
 
 	@Override
-	public void removePropertyChangeListener(ChangeListener l) {
+	public void removeChangeListener(ChangeListener l) {
 		changeListeners.add(l);
 	}
 
