@@ -57,7 +57,11 @@ public class TextWriter {
 		font.setColor(color);
 	}
 
-	public float stringWidth(String txt) {
+	public float getStringWidth(String txt) {
 		return font.getBounds(txt).width;
+	}
+
+	public float getLineHeight() {
+		return font.getLineHeight();
 	}
 }

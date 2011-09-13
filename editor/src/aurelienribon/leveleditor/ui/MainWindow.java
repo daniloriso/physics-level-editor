@@ -1,5 +1,12 @@
 package aurelienribon.leveleditor.ui;
 
+import aurelienribon.leveleditor.AppManager;
+import aurelienribon.leveleditor.AppManager.InteractionModes;
+import aurelienribon.leveleditor.AssetsManager;
+import aurelienribon.leveleditor.LayersManager;
+import aurelienribon.leveleditor.ui.infopanels.SelectModeInfoPanel;
+import aurelienribon.leveleditor.ui.infopanels.SpritesModeInfoPanel;
+import aurelienribon.utils.ChangeListener;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -18,23 +25,58 @@ public class MainWindow extends javax.swing.JFrame {
 	public MainWindow(final Component canvas) {
         initComponents();
 		renderPanel.add(canvas, BorderLayout.CENTER);
+
+		LayersManager.instance().addChangeListener(new ChangeListener() {
+			@Override public void propertyChanged(Object source, String propertyName) {
+				if (propertyName.equals("workingLayer")) {
+					miscCurrentLayerLbl.setText(((LayersManager)source).getWorkingLayer().getName());
+				}
+			}
+		});
+
+		AppManager.instance().addChangeListener(new ChangeListener() {
+			@Override public void propertyChanged(Object source, String propertyName) {
+				if (propertyName.equals("interactionMode")) {
+					infoPanel.removeAll();
+					InteractionModes mode = AppManager.instance().getInteractionMode();
+					switch (mode) {
+						case SELECT:
+							infoPanel.add(new SelectModeInfoPanel(), BorderLayout.CENTER);
+							break;
+						case ADD_SPRITES:
+							infoPanel.add(new SpritesModeInfoPanel(), BorderLayout.CENTER);
+							break;
+						default: assert false;
+					}
+					infoPanel.revalidate();
+				}
+			}
+		});
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        toolsBtnGroup = new javax.swing.ButtonGroup();
         mainPanel = new javax.swing.JPanel();
         renderPanelWrapper = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        miscCurrentLayerLbl = new javax.swing.JLabel();
         renderPanel = new javax.swing.JPanel();
+        toolsPanel = new javax.swing.JPanel();
+        toolSetSelectModeBtn = new javax.swing.JToggleButton();
+        toolSetSpriteModeBtn = new javax.swing.JToggleButton();
+        infoPanel = new javax.swing.JPanel();
+        dummyInfoPanel = new aurelienribon.leveleditor.ui.infopanels.SelectModeInfoPanel();
         sidePanel = new javax.swing.JPanel();
         logoLbl = new javax.swing.JLabel();
         configPanel = new javax.swing.JPanel();
         cfgTitlePanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        cfgSetProjectFileBtn = new javax.swing.JButton();
-        cfgSaveProjectBtn = new javax.swing.JButton();
+        setLevelFileBtn = new javax.swing.JButton();
+        cfgSaveLevelBtn = new javax.swing.JButton();
         cfgLevelFileField = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
         cfgManageAssetsBtn = new javax.swing.JButton();
@@ -51,28 +93,91 @@ public class MainWindow extends javax.swing.JFrame {
 
         renderPanelWrapper.setBackground(Theme.MAIN_BACKGROUND);
 
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel5.setForeground(Theme.MAIN_FOREGROUND);
+        jLabel5.setText("Current layer:");
+
+        miscCurrentLayerLbl.setForeground(Theme.MAIN_FOREGROUND);
+        miscCurrentLayerLbl.setText("<please selected a layer first>");
+
         renderPanel.setBackground(Theme.MAIN_ALT_BACKGROUND);
         renderPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, Theme.SEPARATOR));
         renderPanel.setLayout(new java.awt.BorderLayout());
+
+        toolsPanel.setOpaque(false);
+
+        toolsBtnGroup.add(toolSetSelectModeBtn);
+        toolSetSelectModeBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_cursor.png"))); // NOI18N
+        toolSetSelectModeBtn.setSelected(true);
+        toolSetSelectModeBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        toolSetSelectModeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                toolSetSelectModeBtnActionPerformed(evt);
+            }
+        });
+
+        toolsBtnGroup.add(toolSetSpriteModeBtn);
+        toolSetSpriteModeBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_texture.png"))); // NOI18N
+        toolSetSpriteModeBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        toolSetSpriteModeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                toolSetSpriteModeBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout toolsPanelLayout = new javax.swing.GroupLayout(toolsPanel);
+        toolsPanel.setLayout(toolsPanelLayout);
+        toolsPanelLayout.setHorizontalGroup(
+            toolsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(toolSetSelectModeBtn)
+            .addComponent(toolSetSpriteModeBtn)
+        );
+        toolsPanelLayout.setVerticalGroup(
+            toolsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(toolsPanelLayout.createSequentialGroup()
+                .addComponent(toolSetSelectModeBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(toolSetSpriteModeBtn))
+        );
+
+        infoPanel.setBackground(Theme.MAIN_ALT_BACKGROUND);
+        infoPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, Theme.SEPARATOR));
+        infoPanel.setLayout(new java.awt.CardLayout());
+        infoPanel.add(dummyInfoPanel, "card2");
 
         javax.swing.GroupLayout renderPanelWrapperLayout = new javax.swing.GroupLayout(renderPanelWrapper);
         renderPanelWrapper.setLayout(renderPanelWrapperLayout);
         renderPanelWrapperLayout.setHorizontalGroup(
             renderPanelWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 542, Short.MAX_VALUE)
-            .addGroup(renderPanelWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(renderPanelWrapperLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(renderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)))
+            .addGroup(renderPanelWrapperLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(renderPanelWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(renderPanelWrapperLayout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(miscCurrentLayerLbl)
+                        .addContainerGap(300, Short.MAX_VALUE))
+                    .addGroup(renderPanelWrapperLayout.createSequentialGroup()
+                        .addComponent(toolsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(renderPanelWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(renderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
+                            .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)))))
         );
         renderPanelWrapperLayout.setVerticalGroup(
             renderPanelWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 686, Short.MAX_VALUE)
-            .addGroup(renderPanelWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(renderPanelWrapperLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(renderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addGroup(renderPanelWrapperLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(renderPanelWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(miscCurrentLayerLbl))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(renderPanelWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(toolsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(renderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(infoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         mainPanel.add(renderPanelWrapper, java.awt.BorderLayout.CENTER);
@@ -114,25 +219,25 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        cfgSetProjectFileBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_gear.png"))); // NOI18N
-        cfgSetProjectFileBtn.setText("Set / load level file");
-        cfgSetProjectFileBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        cfgSetProjectFileBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
-        cfgSetProjectFileBtn.setOpaque(false);
-        cfgSetProjectFileBtn.addActionListener(new java.awt.event.ActionListener() {
+        setLevelFileBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_gear.png"))); // NOI18N
+        setLevelFileBtn.setText("Set / load level file");
+        setLevelFileBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        setLevelFileBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        setLevelFileBtn.setOpaque(false);
+        setLevelFileBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cfgSetProjectFileBtnActionPerformed(evt);
+                setLevelFileBtnActionPerformed(evt);
             }
         });
 
-        cfgSaveProjectBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_save.png"))); // NOI18N
-        cfgSaveProjectBtn.setText("Save");
-        cfgSaveProjectBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        cfgSaveProjectBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
-        cfgSaveProjectBtn.setOpaque(false);
-        cfgSaveProjectBtn.addActionListener(new java.awt.event.ActionListener() {
+        cfgSaveLevelBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_save.png"))); // NOI18N
+        cfgSaveLevelBtn.setText("Save");
+        cfgSaveLevelBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        cfgSaveLevelBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        cfgSaveLevelBtn.setOpaque(false);
+        cfgSaveLevelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cfgSaveProjectBtnActionPerformed(evt);
+                cfgSaveLevelBtnActionPerformed(evt);
             }
         });
 
@@ -167,9 +272,9 @@ public class MainWindow extends javax.swing.JFrame {
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, configPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(cfgSetProjectFileBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                .addComponent(setLevelFileBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cfgSaveProjectBtn)
+                .addComponent(cfgSaveLevelBtn)
                 .addContainerGap())
             .addGroup(configPanelLayout.createSequentialGroup()
                 .addContainerGap()
@@ -182,8 +287,8 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(cfgTitlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(configPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cfgSetProjectFileBtn)
-                    .addComponent(cfgSaveProjectBtn))
+                    .addComponent(setLevelFileBtn)
+                    .addComponent(cfgSaveLevelBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cfgLevelFileField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -242,7 +347,7 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(objectsPanelLayout.createSequentialGroup()
                 .addComponent(objTitlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(objManagerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                .addComponent(objManagerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -280,7 +385,7 @@ public class MainWindow extends javax.swing.JFrame {
 		dialog.setVisible(true);
 	}//GEN-LAST:event_cfgManageAssetsBtnActionPerformed
 
-	private void cfgSetProjectFileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cfgSetProjectFileBtnActionPerformed
+	private void setLevelFileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setLevelFileBtnActionPerformed
 		JFileChooser chooser = new JFileChooser(".");
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setMultiSelectionEnabled(false);
@@ -289,36 +394,63 @@ public class MainWindow extends javax.swing.JFrame {
 			if (projectFile != null)
 				cfgLevelFileField.setText(projectFile.getPath());
 		}
-	}//GEN-LAST:event_cfgSetProjectFileBtnActionPerformed
+	}//GEN-LAST:event_setLevelFileBtnActionPerformed
 
-	private void cfgSaveProjectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cfgSaveProjectBtnActionPerformed
+	private void cfgSaveLevelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cfgSaveLevelBtnActionPerformed
 		if (projectFile != null) {
 			;
 		} else {
-			JOptionPane.showMessageDialog(this, "Please select a project file first");
+			JOptionPane.showMessageDialog(this, "Please select a level file first");
 		}
-	}//GEN-LAST:event_cfgSaveProjectBtnActionPerformed
+	}//GEN-LAST:event_cfgSaveLevelBtnActionPerformed
+
+	private void toolSetSelectModeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolSetSelectModeBtnActionPerformed
+		AppManager.instance().setInteractionMode(AppManager.InteractionModes.SELECT);
+		Component cmp = renderPanel.getComponent(0);
+		if (cmp != null)
+			cmp.requestFocusInWindow();
+}//GEN-LAST:event_toolSetSelectModeBtnActionPerformed
+
+	private void toolSetSpriteModeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolSetSpriteModeBtnActionPerformed
+		AppManager.instance().setInteractionMode(AppManager.InteractionModes.ADD_SPRITES);
+		Component cmp = renderPanel.getComponent(0);
+		if (cmp != null)
+			cmp.requestFocusInWindow();
+		if (AssetsManager.instance().isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Consider adding some assets to the "
+				+ "library to be able to place sprites.\n"
+				+ "Just use the 'Manage assets' button.");
+		}
+}//GEN-LAST:event_toolSetSpriteModeBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField cfgLevelFileField;
     private javax.swing.JButton cfgManageAssetsBtn;
-    private javax.swing.JButton cfgSaveProjectBtn;
-    private javax.swing.JButton cfgSetProjectFileBtn;
+    private javax.swing.JButton cfgSaveLevelBtn;
     private javax.swing.JPanel cfgTitlePanel;
     private javax.swing.JPanel configPanel;
+    private aurelienribon.leveleditor.ui.infopanels.SelectModeInfoPanel dummyInfoPanel;
+    private javax.swing.JPanel infoPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel logoLbl;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JLabel miscCurrentLayerLbl;
     private aurelienribon.leveleditor.ui.ManageObjectsPanel objManagerPanel;
     private javax.swing.JPanel objTitlePanel;
     private javax.swing.JPanel objectsPanel;
     private javax.swing.JPanel renderPanel;
     private javax.swing.JPanel renderPanelWrapper;
+    private javax.swing.JButton setLevelFileBtn;
     private javax.swing.JPanel sidePanel;
+    private javax.swing.JToggleButton toolSetSelectModeBtn;
+    private javax.swing.JToggleButton toolSetSpriteModeBtn;
+    private javax.swing.ButtonGroup toolsBtnGroup;
+    private javax.swing.JPanel toolsPanel;
     // End of variables declaration//GEN-END:variables
 
 	public void centerDialog(Dialog dialog) {
