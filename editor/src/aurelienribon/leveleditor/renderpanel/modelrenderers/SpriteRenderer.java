@@ -1,9 +1,8 @@
 package aurelienribon.leveleditor.renderpanel.modelrenderers;
 
 import aurelienribon.leveleditor.models.SpriteModel;
+import aurelienribon.leveleditor.utils.AssetLoader;
 import aurelienribon.utils.ChangeListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -17,9 +16,7 @@ public class SpriteRenderer implements LayerChildRenderer {
 	public SpriteRenderer(SpriteModel model) {
 		this.model = model;
 		model.addChangeListener(modelChangeListener);
-
-		Texture tex = new Texture(Gdx.files.absolute(model.getAsset().getPath()));
-		this.sprite = new Sprite(tex);
+		this.sprite = new Sprite(AssetLoader.getAssetTexture(model.getAsset()));
 		update();
 	}
 

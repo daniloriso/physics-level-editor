@@ -32,6 +32,10 @@ public abstract class ObservableList<T> {
 		return children.indexOf(elem);
 	}
 
+	public boolean contains(T elem) {
+		return children.contains(elem);
+	}
+
 	public void add(T elem) {
 		children.add(elem);
 		fireElementAdded(indexOf(elem), elem);

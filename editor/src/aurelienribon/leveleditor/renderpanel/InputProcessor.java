@@ -1,6 +1,10 @@
 package aurelienribon.leveleditor.renderpanel;
 
 import aurelienribon.leveleditor.AppManager;
+import aurelienribon.leveleditor.LayersManager;
+import aurelienribon.leveleditor.TempSpriteManager;
+import aurelienribon.leveleditor.models.LayerModel;
+import aurelienribon.leveleditor.models.SpriteModel;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -20,6 +24,15 @@ public class InputProcessor extends InputAdapter {
 
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
+		AppManager app = AppManager.instance();
+		if (app.getInteractionMode() == AppManager.InteractionModes.ADD_SPRITES && button == Buttons.LEFT) {
+			SpriteModel sprite = TempSpriteManager.instance().getTempSprite();
+			LayerModel layer = LayersManager.instance().getWorkingLayer();
+			if (layer != null) {
+				layer.add(sprite);
+				TempSpriteManager.instance().reload();
+			}
+		}
 		lastTouch.set(x, y);
 		return true;
 	}
@@ -57,7 +70,11 @@ public class InputProcessor extends InputAdapter {
 	public boolean keyDown(int keycode) {
 		AppManager app = AppManager.instance();
 		if (app.getInteractionMode() == AppManager.InteractionModes.ADD_SPRITES && keycode == Keys.TAB) {
-			rdr.setTempSprite(isShiftPressed() ? rdr.getPreviousAsset() : rdr.getNextAsset());
+			if (isShiftPressed()) {
+				TempSpriteManager.instance().previous();
+			} else {
+				TempSpriteManager.instance().next();
+			}
 		}
 		return true;
 	}

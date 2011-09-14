@@ -4,17 +4,29 @@ import aurelienribon.leveleditor.LayersManager;
 import aurelienribon.leveleditor.models.SpriteModel;
 import aurelienribon.leveleditor.models.LayerModel;
 import aurelienribon.leveleditor.models.behaviors.Hideable;
+import aurelienribon.leveleditor.models.behaviors.Nameable;
 import aurelienribon.leveleditor.models.behaviors.Renameable;
 import aurelienribon.utils.MutableTreeModel;
 import aurelienribon.utils.ObservableList;
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.event.MouseEvent;
+import java.util.EventObject;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -23,16 +35,28 @@ import javax.swing.tree.TreeSelectionModel;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class ManageObjectsPanel extends javax.swing.JPanel {
-	private static final ImageIcon layerIcon = new ImageIcon(ManageObjectsPanel.class.getResource("gfx/ic_layers.png"));
-	private static final ImageIcon assetIcon = new ImageIcon(ManageObjectsPanel.class.getResource("gfx/ic_texture.png"));
+	private final Map<Class, ImageIcon> iconsMap = new HashMap<Class, ImageIcon>();
 
     public ManageObjectsPanel() {
+		iconsMap.put(LayerModel.class, new ImageIcon(ManageObjectsPanel.class.getResource("gfx/ic_layers.png")));
+		iconsMap.put(SpriteModel.class, new ImageIcon(ManageObjectsPanel.class.getResource("gfx/ic_texture.png")));
+
         initComponents();
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		tree.setModel(treeModel);
 		tree.setCellRenderer(treeCellRenderer);
-		tree.setModel(new MutableTreeModel(LayersManager.instance()));
+		tree.setCellEditor(treeCellEditor);
 		tree.addTreeSelectionListener(treeSelectionListener);
 		updateUiState(null);
+
+		tree.getModel().addTreeModelListener(new TreeModelListener() {
+			@Override public void treeNodesChanged(TreeModelEvent e) {}
+			@Override public void treeNodesRemoved(TreeModelEvent e) {}
+			@Override public void treeStructureChanged(TreeModelEvent e) {}
+			@Override public void treeNodesInserted(TreeModelEvent e) {
+				tree.expandPath(e.getTreePath());
+			}
+		});
     }
 	
     @SuppressWarnings("unchecked")
@@ -55,6 +79,7 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 
         tree.setBackground(Theme.TEXTAREA_BACKGROUND);
         tree.setForeground(Theme.TEXTAREA_FOREGROUND);
+        tree.setEditable(true);
         tree.setRootVisible(false);
         tree.setShowsRootHandles(true);
         treeScrollPane.setViewportView(tree);
@@ -284,36 +309,79 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane treeScrollPane;
     // End of variables declaration//GEN-END:variables
 
-	private final TreeCellRenderer treeCellRenderer = new TreeCellRenderer() {
-		@Override public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {		
-			JLabel label = new JLabel();
-			label.setBorder(new EmptyBorder(2, 5, 2, 5));
+	private final MutableTreeModel treeModel = new MutableTreeModel(LayersManager.instance()) {
+		@Override
+		public void valueForPathChanged(TreePath path, Object newValue) {
+			assert path.getLastPathComponent() instanceof Renameable;
+			((Renameable)path.getLastPathComponent()).setName((String)newValue);
+		}
+	};
 
-			if (value instanceof LayerModel) {
-				LayerModel layer = (LayerModel)value;
-				label.setIcon(layerIcon);
-				label.setText(layer.getName());
-			} else if (value instanceof SpriteModel) {
-				SpriteModel asset = (SpriteModel)value;
-				label.setIcon(assetIcon);
-				label.setText(asset.getName());
-			}
+	private final TreeCellRenderer treeCellRenderer = new TreeCellRenderer() {
+		private final JPanel panel = new JPanel(new BorderLayout());
+		private final JLabel iconLabel = new JLabel();
+		private final JLabel nameLabel = new JLabel();
+
+		{
+			iconLabel.setBorder(new EmptyBorder(0, 0, 0, 5));
+			nameLabel.setBorder(new EmptyBorder(0, 2, 0, 2));
+			panel.add(iconLabel, BorderLayout.WEST);
+			panel.add(nameLabel, BorderLayout.CENTER);
+		}
+
+		@Override
+		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+			if ((value instanceof Nameable) == false)
+				return panel;
+
+			iconLabel.setIcon(iconsMap.get(value.getClass()));
+			nameLabel.setText(((Nameable)value).getName());
 
 			if (selected) {
-				label.setBackground(Theme.MAIN_BACKGROUND);
-				label.setForeground(Theme.MAIN_FOREGROUND);
-				label.setOpaque(true);
+				nameLabel.setBackground(Theme.MAIN_BACKGROUND);
+				nameLabel.setForeground(Theme.MAIN_FOREGROUND);
+				nameLabel.setOpaque(true);
 			} else {
-				label.setForeground(Theme.TEXTAREA_FOREGROUND);
-				label.setOpaque(false);
+				nameLabel.setForeground(Theme.TEXTAREA_FOREGROUND);
+				nameLabel.setOpaque(false);
 			}
 
-			return label;
+			return panel;
+		}
+	};
+
+	private final TreeCellEditor treeCellEditor = new DefaultCellEditor(new JTextField()) {
+		private final JPanel panel = new JPanel(new BorderLayout());
+		private final JLabel iconLabel = new JLabel();
+
+		{
+			iconLabel.setBorder(new EmptyBorder(0, 0, 0, 5));
+			editorComponent.setBackground(Theme.TEXTAREA_BACKGROUND);
+			editorComponent.setForeground(Theme.TEXTAREA_FOREGROUND);
+			panel.add(iconLabel, BorderLayout.WEST);
+			panel.add(editorComponent, BorderLayout.CENTER);
+		}
+
+		@Override
+		public boolean isCellEditable(EventObject anEvent) {
+			boolean ret = tree.getLastSelectedPathComponent() instanceof Renameable;
+			if (anEvent instanceof MouseEvent)
+				ret &= ((MouseEvent)anEvent).getClickCount() >= 2;
+			return ret;
+		}
+
+		@Override
+		public Component getTreeCellEditorComponent(JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row) {
+			assert value instanceof Renameable;
+			iconLabel.setIcon(iconsMap.get(value.getClass()));
+			((JTextField)editorComponent).setText(((Renameable)value).getName());
+			return panel;
 		}
 	};
 
 	private final TreeSelectionListener treeSelectionListener = new TreeSelectionListener() {
-		@Override public void valueChanged(TreeSelectionEvent e) {
+		@Override
+		public void valueChanged(TreeSelectionEvent e) {
 			TreePath path = e.getNewLeadSelectionPath();
 			Object elem = path != null ? path.getLastPathComponent() : null;
 			updateUiState(elem);

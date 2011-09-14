@@ -6,12 +6,11 @@ import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com
  */
-public class MutableTreeModel implements TreeModel {
+public abstract class MutableTreeModel implements TreeModel {
 	private final EventListenerList listeners = new EventListenerList();
 	private final ObservableList root;
 
@@ -45,11 +44,6 @@ public class MutableTreeModel implements TreeModel {
 	@Override
 	public boolean isLeaf(Object node) {
 		return !(node instanceof ObservableList);
-	}
-
-	@Override
-	public void valueForPathChanged(TreePath path, Object newValue) {
-		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
@@ -124,22 +118,22 @@ public class MutableTreeModel implements TreeModel {
 	// Helpers
 	// -------------------------------------------------------------------------
 
-	private void fireNodesAdded(Object parent) {
-		TreeModelEvent evt = new TreeModelEvent(this, pathsMap.get(parent));
+	private void fireNodeAdded(Object parent, int childIdx, Object child) {
+		TreeModelEvent evt = new TreeModelEvent(this, pathsMap.get(parent), new int[]{childIdx}, new Object[]{child});
 		for (TreeModelListener listener : listeners.getListeners(TreeModelListener.class))
-			listener.treeStructureChanged(evt);
+			listener.treeNodesInserted(evt);
 	}
 
-	private void fireNodesRemoved(Object parent) {
-		TreeModelEvent evt = new TreeModelEvent(this, pathsMap.get(parent));
+	private void fireNodeRemoved(Object parent, int childIdx, Object child) {
+		TreeModelEvent evt = new TreeModelEvent(this, pathsMap.get(parent), new int[]{childIdx}, new Object[]{child});
 		for (TreeModelListener listener : listeners.getListeners(TreeModelListener.class))
-			listener.treeStructureChanged(evt);
+			listener.treeNodesRemoved(evt);
 	}
 
 	private void fireNodeChanged(Object parent) {
 		TreeModelEvent evt = new TreeModelEvent(this, pathsMap.get(parent));
 		for (TreeModelListener listener : listeners.getListeners(TreeModelListener.class))
-			listener.treeStructureChanged(evt);
+			listener.treeNodesChanged(evt);
 	}
 
 	// -------------------------------------------------------------------------
@@ -150,13 +144,13 @@ public class MutableTreeModel implements TreeModel {
 		@Override
 		public void elementAdded(Object source, int idx, Object elem) {
 			registerElement(source, elem);
-			fireNodesAdded(source);
+			fireNodeAdded(source, idx, elem);
 		}
 
 		@Override
 		public void elementRemoved(Object source, int idx, Object elem) {
 			unregisterElement(elem);
-			fireNodesRemoved(source);
+			fireNodeRemoved(source, idx, elem);
 		}
 	};
 

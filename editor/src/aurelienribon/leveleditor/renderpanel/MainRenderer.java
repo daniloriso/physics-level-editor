@@ -2,19 +2,26 @@ package aurelienribon.leveleditor.renderpanel;
 
 import aurelienribon.leveleditor.AppManager;
 import aurelienribon.leveleditor.AssetsManager;
+import aurelienribon.leveleditor.LayersManager;
+import aurelienribon.leveleditor.TempSpriteManager;
 import aurelienribon.leveleditor.models.AssetInfo;
-import aurelienribon.leveleditor.utils.AssetLoader;
+import aurelienribon.leveleditor.models.LayerModel;
+import aurelienribon.leveleditor.models.SpriteModel;
+import aurelienribon.leveleditor.renderpanel.modelrenderers.LayerRenderer;
+import aurelienribon.leveleditor.renderpanel.modelrenderers.SpriteRenderer;
 import aurelienribon.libgdx.Renderer2D;
 import aurelienribon.libgdx.TextWriter;
+import aurelienribon.utils.ChangeListener;
 import aurelienribon.utils.ObservableList.ListChangedListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com
@@ -23,73 +30,74 @@ public class MainRenderer extends Renderer2D {
 	private final SpriteBatch batch = new SpriteBatch();
 	private final TextWriter writer = new TextWriter(this, batch, new BitmapFont());
 	private final ImmediateModeRenderer imr = new ImmediateModeRenderer();
+	private final Map<LayerModel, LayerRenderer> layerRdrsMap = new LinkedHashMap<LayerModel, LayerRenderer>();
+	private SpriteRenderer tempSpriteRdr;
+	
 	private final Vector2 vec1 = new Vector2();
 	private final Vector2 vec2 = new Vector2();
-	private Sprite tempSprite;
-	private AssetInfo tempAsset;
 
 	public MainRenderer() {
 		setWorldViewport(20, 20);
 		setWorldViewportUniformToFill();
 		writer.setColor(Color.BLACK);
 
-		AssetsManager.instance().addListChangedListener(new ListChangedListener() {
-			@Override public void elementAdded(Object source, int idx, Object elem) {
-				if (tempSprite == null)
-					setTempSprite(getNextAsset());
+		for (LayerModel layer : LayersManager.instance().getAll())
+			layerRdrsMap.put(layer, new LayerRenderer(layer));
+			
+		LayersManager.instance().addListChangedListener(layersListChangedListener);
+		AssetsManager.instance().addListChangedListener(assetsListChangedListener);
+		TempSpriteManager.instance().addChangeListener(tempSpriteChangeListener);
+	}
+
+	private final ListChangedListener<LayerModel> layersListChangedListener = new ListChangedListener() {
+		@Override
+		public void elementAdded(Object source, int idx, Object elem) {
+			LayerModel layer = (LayerModel)elem;
+			layerRdrsMap.put(layer, new LayerRenderer(layer));
+		}
+
+		@Override
+		public void elementRemoved(Object source, int idx, Object elem) {
+			LayerModel layer = (LayerModel)elem;
+			layerRdrsMap.remove(layer);
+		}
+	};
+
+	private final ListChangedListener<AssetInfo> assetsListChangedListener = new ListChangedListener() {
+		@Override
+		public void elementAdded(Object source, int idx, Object elem) {
+			TempSpriteManager.instance().reload();
+		}
+
+		@Override
+		public void elementRemoved(Object source, int idx, Object elem) {
+			TempSpriteManager.instance().reload();
+		}
+	};
+
+	private final ChangeListener tempSpriteChangeListener = new ChangeListener() {
+		@Override
+		public void propertyChanged(Object source, String propertyName) {
+			SpriteModel sprite = TempSpriteManager.instance().getTempSprite();
+			if (sprite != null) {
+				tempSpriteRdr = new SpriteRenderer(sprite);
+			} else {
+				tempSpriteRdr = null;
 			}
-
-			@Override public void elementRemoved(Object source, int idx, Object elem) {
-				setTempSprite(tempAsset);
-			}
-		});
-	}
-
-	public AssetInfo getNextAsset() {
-		AssetsManager am = AssetsManager.instance();
-		if (!am.isEmpty()) {
-			int id = am.indexOf(tempAsset);
-			return am.get((id+1) % am.size());
 		}
-		return null;
-	}
-
-	public AssetInfo getPreviousAsset() {
-		AssetsManager am = AssetsManager.instance();
-		if (!am.isEmpty()) {
-			int id = am.indexOf(tempAsset);
-			return am.get((id-1) % am.size());
-		}
-		return null;
-	}
-
-	public void setTempSprite(AssetInfo asset) {
-		if (asset == null) {
-			tempSprite = null;
-			tempAsset = null;
-			return;
-		}
-		
-		AssetsManager am = AssetsManager.instance();
-		if (am.indexOf(asset) >= 0) {
-			tempSprite = new Sprite(AssetLoader.getAssetTexture(asset));
-			tempSprite.setSize(asset.getWidth()/50f, asset.getHeight()/50f);
-			tempAsset = asset;
-		} else {
-			setTempSprite(getNextAsset());
-		}
-	}
+	};
 
 	// -------------------------------------------------------------------------
 	// Update
 	// -------------------------------------------------------------------------
 
 	public void update() {
-		if (tempSprite != null) {
-			Vector2 p = sp2w(Gdx.input.getX(), screenSizePixels.y - Gdx.input.getY());
-			tempSprite.setPosition(
-				p.x - tempSprite.getWidth()/2,
-				p.y - tempSprite.getHeight()/2);
+		AppManager app = AppManager.instance();
+		if (app.getInteractionMode() == AppManager.InteractionModes.ADD_SPRITES) {
+			Vector2 p = st2w(Gdx.input.getX(), Gdx.input.getY());
+			SpriteModel sprite = TempSpriteManager.instance().getTempSprite();
+			if (sprite != null)
+				sprite.setPosition(p.x - sprite.getWidth()/2, p.y - sprite.getHeight()/2);
 		}
 	}
 
@@ -104,20 +112,25 @@ public class MainRenderer extends Renderer2D {
 		drawLine(vec1.set(0, 0), vec2.set(1, 0), Color.RED, 2);
 		drawLine(vec1.set(0, 0), vec2.set(0, 1), Color.GREEN, 2);
 
+		batch.setProjectionMatrix(camera.combined);
+		batch.begin();
+
+		for (LayerRenderer rdr : layerRdrsMap.values())
+			rdr.render(batch);
+		
 		switch (app.getInteractionMode()) {
 			case SELECT:
 				break;
 
 			case ADD_SPRITES:
-				batch.setProjectionMatrix(camera.combined);
-				batch.begin();
-				if (tempSprite != null)
-					tempSprite.draw(batch);
-				batch.end();
+				if (tempSpriteRdr != null)
+					tempSpriteRdr.render(batch);
 				break;
 
 			default: assert false;
 		}
+		
+		batch.end();
 	}
 
 	// -------------------------------------------------------------------------

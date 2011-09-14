@@ -28,6 +28,7 @@ public class LayersManager extends ObservableList<LayerModel> implements Changea
 		LayerModel layer = new LayerModel();
 		layer.setName("Layer 1");
 		add(layer);
+		workingLayer = layer;
 	}
 
 	public LayerModel getWorkingLayer() {
