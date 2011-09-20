@@ -1,8 +1,10 @@
 package aurelienribon.leveleditor.renderpanel;
 
 import aurelienribon.leveleditor.AppManager;
+import aurelienribon.leveleditor.AppManager.InteractionModes;
 import aurelienribon.leveleditor.AssetsManager;
 import aurelienribon.leveleditor.LayersManager;
+import aurelienribon.leveleditor.SelectionManager;
 import aurelienribon.leveleditor.TempSpriteManager;
 import aurelienribon.leveleditor.models.AssetInfo;
 import aurelienribon.leveleditor.models.LayerModel;
@@ -108,6 +110,7 @@ public class MainRenderer extends Renderer2D {
 
 	public void render(GL10 gl) {
 		AppManager app = AppManager.instance();
+		InteractionModes mode = app.getInteractionMode();
 
 		camera.apply(gl);
 		drawLine(vec1.set(0, 0), vec2.set(1, 0), Color.RED, 2);
@@ -115,31 +118,29 @@ public class MainRenderer extends Renderer2D {
 
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-
 		for (LayerRenderer rdr : layerRdrsMap.values())
 			rdr.render(batch);
-		
-		switch (app.getInteractionMode()) {
-			case SELECT:
-				break;
-
-			case ADD_SPRITES:
-				if (tempSpriteRdr != null)
-					tempSpriteRdr.render(batch);
-				break;
-
-			default: assert false;
-		}
-		
+		if (mode == InteractionModes.ADD_SPRITES && tempSpriteRdr != null)
+			tempSpriteRdr.render(batch);
 		batch.end();
 
-		Delimitable mouseOverElem = LayersManager.instance().getMouseOverLayerChild();
-		Delimitable selectedElem = LayersManager.instance().getSelectedLayerChild();
+		drawBoundingBoxes(gl);
+	}
+
+	private void drawBoundingBoxes(GL10 gl) {
+		if (AppManager.instance().getInteractionMode() != InteractionModes.SELECT)
+			return;
+
 		camera.apply(gl);
 		gl.glEnable(GL10.GL_BLEND);
-		if (mouseOverElem != selectedElem)
-			drawBoundingBox(mouseOverElem, Theme.MOUSEOVER_BOUNDINGBOX_COLOR);
-		drawBoundingBoxWithHandles(selectedElem, Theme.SELECTED_BOUNDINGBOX_COLOR);
+
+		Object sO = SelectionManager.instance().getSelectedObject();
+		Object mO = SelectionManager.instance().getMouseOverObject();
+
+		if (sO instanceof Delimitable)
+			drawBoundingBoxWithHandles((Delimitable)sO, Theme.SELECTED_BOUNDINGBOX_COLOR);
+		if (mO != sO && mO instanceof Delimitable)
+			drawBoundingBox((Delimitable)mO, Theme.MOUSEOVER_BOUNDINGBOX_COLOR);
 	}
 
 	private void drawBoundingBox(Delimitable e, Color color) {
@@ -159,7 +160,15 @@ public class MainRenderer extends Renderer2D {
 		vec1.set(e.getX(), e.getY());
 		drawRect(vec1, w, h, color, 3);
 
+		vec1.sub(d/2, d/2);
+		vec1.add(0, 0); drawRect(vec1, d, d, color, 3);
 		vec1.add(w/2, 0); drawRect(vec1, d, d, color, 3);
+		vec1.add(w/2, 0); drawRect(vec1, d, d, color, 3);
+		vec1.add(0, h/2); drawRect(vec1, d, d, color, 3);
+		vec1.add(0, h/2); drawRect(vec1, d, d, color, 3);
+		vec1.add(-w/2, 0); drawRect(vec1, d, d, color, 3);
+		vec1.add(-w/2, 0); drawRect(vec1, d, d, color, 3);
+		vec1.add(0, -h/2); drawRect(vec1, d, d, color, 3);
 	}
 
 	// -------------------------------------------------------------------------

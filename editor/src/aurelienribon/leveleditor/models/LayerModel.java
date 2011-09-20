@@ -6,9 +6,8 @@ import aurelienribon.leveleditor.models.behaviors.Delimitable;
 import aurelienribon.leveleditor.models.behaviors.Selectable;
 import aurelienribon.utils.ChangeListener;
 import aurelienribon.utils.Changeable;
+import aurelienribon.utils.InnerChangeableObject;
 import aurelienribon.utils.ObservableList;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -30,21 +29,16 @@ public class LayerModel extends ObservableList<LayerChild> implements Changeable
 	// Changeable impl.
 	// -------------------------------------------------------------------------
 
-	private final List<ChangeListener> changeListeners = new ArrayList<ChangeListener>(3);
+	private final InnerChangeableObject cho = new InnerChangeableObject();
 
 	@Override
 	public void addChangeListener(ChangeListener l) {
-		changeListeners.add(l);
+		cho.addChangeListener(l);
 	}
 
 	@Override
 	public void removeChangeListener(ChangeListener l) {
-		changeListeners.add(l);
-	}
-
-	private void firePropertyChanged(String propertyName) {
-		for (ChangeListener listener : changeListeners)
-			listener.propertyChanged(this, propertyName);
+		cho.removeChangeListener(l);
 	}
 
 	// -------------------------------------------------------------------------
@@ -61,7 +55,7 @@ public class LayerModel extends ObservableList<LayerChild> implements Changeable
 	@Override
 	public void setName(String name) {
 		this.name = name != null ? name : "";
-		firePropertyChanged("name");
+		cho.firePropertyChanged("name");
 	}
 
 	// -------------------------------------------------------------------------
@@ -78,6 +72,6 @@ public class LayerModel extends ObservableList<LayerChild> implements Changeable
 	@Override
 	public void setVisible(boolean visible) {
 		this.visible = visible;
-		firePropertyChanged("visible");
+		cho.firePropertyChanged("visible");
 	}
 }

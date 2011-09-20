@@ -2,6 +2,7 @@ package aurelienribon.leveleditor.renderpanel;
 
 import aurelienribon.leveleditor.AppManager;
 import aurelienribon.leveleditor.LayersManager;
+import aurelienribon.leveleditor.SelectionManager;
 import aurelienribon.leveleditor.TempSpriteManager;
 import aurelienribon.leveleditor.models.LayerModel;
 import com.badlogic.gdx.Gdx;
@@ -34,7 +35,7 @@ public class InputProcessor extends InputAdapter {
 					LayerModel layer = LayersManager.instance().getWorkingLayer();
 					if (layer != null) {
 						Vector2 p = rdr.st2w(x, y);
-						LayersManager.instance().setSelectedLayerChild(layer.pickChild(p.x, p.y));
+						SelectionManager.instance().setSelectedObject(layer.pickChild(p.x, p.y));
 					}
 					break;
 			}
@@ -69,7 +70,7 @@ public class InputProcessor extends InputAdapter {
 				LayerModel layer = LayersManager.instance().getWorkingLayer();
 				if (layer != null) {
 					Vector2 p = rdr.st2w(x, y);
-					LayersManager.instance().setMouseOverLayerChild(layer.pickChild(p.x, p.y));
+					SelectionManager.instance().setMouseOverObject(layer.pickChild(p.x, p.y));
 				}
 				break;
 		}

@@ -1,8 +1,10 @@
 package aurelienribon.leveleditor.ui;
 
 import aurelienribon.leveleditor.LayersManager;
+import aurelienribon.leveleditor.SelectionManager;
 import aurelienribon.leveleditor.models.SpriteModel;
 import aurelienribon.leveleditor.models.LayerModel;
+import aurelienribon.leveleditor.models.behaviors.Delimitable;
 import aurelienribon.leveleditor.models.behaviors.Hideable;
 import aurelienribon.leveleditor.models.behaviors.Nameable;
 import aurelienribon.leveleditor.models.behaviors.Renameable;
@@ -282,6 +284,8 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 			Object child = path.getLastPathComponent();
 			ObservableList parent = (ObservableList) path.getPathComponent(path.getPathCount()-2);
 			parent.remove(child);
+			if (child == SelectionManager.instance().getSelectedObject())
+				SelectionManager.instance().setSelectedObject(null);
 		}
 	}//GEN-LAST:event_deleteBtnActionPerformed
 
@@ -392,8 +396,8 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 			Object elem = path != null ? path.getLastPathComponent() : null;
 			updateUiState(elem);
 
-			if (elem != null && elem instanceof LayerModel)
-				LayersManager.instance().setWorkingLayer((LayerModel)elem);
+			if (elem != null && elem instanceof Delimitable)
+				SelectionManager.instance().setSelectedObject(elem);
 		}
 	};
 

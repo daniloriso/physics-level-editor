@@ -1,7 +1,6 @@
 
 import aurelienribon.leveleditor.AppManager;
 import aurelienribon.leveleditor.AssetsManager;
-import aurelienribon.leveleditor.models.AssetInfo;
 import aurelienribon.leveleditor.ui.MainWindow;
 import aurelienribon.leveleditor.utils.AssetLoader;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
@@ -9,8 +8,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 

@@ -4,14 +4,14 @@ import aurelienribon.leveleditor.models.AssetInfo;
 import aurelienribon.leveleditor.models.LayerModel;
 import aurelienribon.leveleditor.models.SpriteModel;
 import aurelienribon.utils.ChangeListener;
-import aurelienribon.utils.Changeable;
+import aurelienribon.utils.ChangeableObject;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com
  */
-public class TempSpriteManager implements Changeable {
+public class TempSpriteManager extends ChangeableObject {
 	// -------------------------------------------------------------------------
 	// Singleton
 	// -------------------------------------------------------------------------
@@ -77,26 +77,5 @@ public class TempSpriteManager implements Changeable {
 		SpriteModel sprite = new SpriteModel(asset);
 		sprite.setSize(asset.getWidth()/50f, asset.getHeight()/50f);
 		return sprite;
-	}
-
-	// -------------------------------------------------------------------------
-	// Changeable impl.
-	// -------------------------------------------------------------------------
-
-	private final List<ChangeListener> changeListeners = new ArrayList<ChangeListener>(3);
-
-	@Override
-	public void addChangeListener(ChangeListener l) {
-		changeListeners.add(l);
-	}
-
-	@Override
-	public void removeChangeListener(ChangeListener l) {
-		changeListeners.add(l);
-	}
-
-	private void firePropertyChanged(String propertyName) {
-		for (ChangeListener listener : changeListeners)
-			listener.propertyChanged(this, propertyName);
 	}
 }

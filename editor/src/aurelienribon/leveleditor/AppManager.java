@@ -1,13 +1,10 @@
 package aurelienribon.leveleditor;
 
 import aurelienribon.leveleditor.renderpanel.RenderPanel;
-import aurelienribon.utils.ChangeListener;
-import aurelienribon.utils.Changeable;
+import aurelienribon.utils.ChangeableObject;
 import java.awt.Component;
-import java.util.ArrayList;
-import java.util.List;
 
-public class AppManager implements Changeable {
+public class AppManager extends ChangeableObject {
 	// -------------------------------------------------------------------------
 	// Singleton
 	// -------------------------------------------------------------------------
@@ -16,7 +13,7 @@ public class AppManager implements Changeable {
 	public static AppManager instance() {return instance;}
 
 	// -------------------------------------------------------------------------
-	// RenderPanel
+	// Components
 	// -------------------------------------------------------------------------
 
 	private final RenderPanel renderPanel = new RenderPanel();
@@ -49,26 +46,5 @@ public class AppManager implements Changeable {
 	public void setInteractionMode(InteractionModes interactionMode) {
 		this.interactionMode = interactionMode;
 		firePropertyChanged("interactionMode");
-	}
-
-	// -------------------------------------------------------------------------
-	// Changeable impl.
-	// -------------------------------------------------------------------------
-
-	private final List<ChangeListener> changeListeners = new ArrayList<ChangeListener>(3);
-
-	@Override
-	public void addChangeListener(ChangeListener l) {
-		changeListeners.add(l);
-	}
-
-	@Override
-	public void removeChangeListener(ChangeListener l) {
-		changeListeners.add(l);
-	}
-
-	private void firePropertyChanged(String propertyName) {
-		for (ChangeListener listener : changeListeners)
-			listener.propertyChanged(this, propertyName);
 	}
 }

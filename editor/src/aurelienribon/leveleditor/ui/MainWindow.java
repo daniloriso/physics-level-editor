@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -23,20 +22,23 @@ import javax.swing.Timer;
  * @author Aurelien Ribon | http://www.aurelienribon.com
  */
 public class MainWindow extends javax.swing.JFrame {
-	private final Timer updateTimer;
 	private File projectFile;
 
-	public MainWindow(final Component canvas) {
+	public MainWindow(Component canvas) {
         initComponents();
 		renderPanelHolder.add(canvas, BorderLayout.CENTER);
 		AppManager.instance().setRenderCanvas(canvas);
 		canvas.requestFocusInWindow();
 
-		updateTimer = new Timer(500, updateTimerActionListener);
+		final Timer updateTimer = new Timer(500, updateTimerActionListener);
 		updateTimer.setInitialDelay(0);
 		updateTimer.start();
 
-		addWindowListener(windowListener);
+		addWindowListener(new WindowAdapter() {
+			@Override public void windowClosing(WindowEvent e) {
+				updateTimer.stop();
+			}
+		});
     }
 
 	private final ActionListener updateTimerActionListener = new ActionListener() {
@@ -53,12 +55,6 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 	};
 
-	private final WindowListener windowListener = new WindowAdapter() {
-		@Override public void windowClosing(WindowEvent e) {
-			updateTimer.stop();
-		}
-	};
-
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -67,7 +63,6 @@ public class MainWindow extends javax.swing.JFrame {
         mainPanel = new javax.swing.JPanel();
         workingPanel = new javax.swing.JPanel();
         renderPanelHolder = new javax.swing.JPanel();
-        infoPanel = new aurelienribon.leveleditor.ui.InfoPanel();
         jLabel6 = new javax.swing.JLabel();
         wkCurrentLayerLbl = new javax.swing.JLabel();
         sidePanel1 = new javax.swing.JPanel();
@@ -82,6 +77,8 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        infoPanel = new aurelienribon.leveleditor.ui.InfoPanel();
         sidePanel2 = new javax.swing.JPanel();
         toolsPanel = new aurelienribon.leveleditor.ui.ToolsPanel();
 
@@ -98,7 +95,7 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel6.setForeground(Theme.MAIN_FOREGROUND);
         jLabel6.setText("Current layer:");
 
-        wkCurrentLayerLbl.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        wkCurrentLayerLbl.setFont(new java.awt.Font("Tahoma", 1, 11));
         wkCurrentLayerLbl.setForeground(Theme.MAIN_FOREGROUND);
         wkCurrentLayerLbl.setText("<no layer selected>");
 
@@ -106,13 +103,12 @@ public class MainWindow extends javax.swing.JFrame {
         workingPanel.setLayout(workingPanelLayout);
         workingPanelLayout.setHorizontalGroup(
             workingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(infoPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
-            .addComponent(renderPanelHolder, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
             .addGroup(workingPanelLayout.createSequentialGroup()
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(wkCurrentLayerLbl)
                 .addContainerGap())
+            .addComponent(renderPanelHolder, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
         );
         workingPanelLayout.setVerticalGroup(
             workingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -122,9 +118,7 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(jLabel6)
                     .addComponent(wkCurrentLayerLbl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(renderPanelHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(infoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(renderPanelHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 595, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -234,20 +228,24 @@ public class MainWindow extends javax.swing.JFrame {
             objectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, objectsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(objManagerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
+                .addComponent(objManagerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/logo.png"))); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12));
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel2.setForeground(Theme.MAIN_FOREGROUND);
         jLabel2.setText("-- Objects");
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel1.setForeground(Theme.MAIN_FOREGROUND);
         jLabel1.setText("-- Configuration");
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel3.setForeground(Theme.MAIN_FOREGROUND);
+        jLabel3.setText("-- Selection");
 
         javax.swing.GroupLayout sidePanel1Layout = new javax.swing.GroupLayout(sidePanel1);
         sidePanel1.setLayout(sidePanel1Layout);
@@ -257,10 +255,12 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(sidePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(objectsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                     .addComponent(configPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                    .addComponent(infoPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
                 .addContainerGap())
         );
         sidePanel1Layout.setVerticalGroup(
@@ -272,10 +272,14 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(configPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(objectsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(infoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -295,7 +299,7 @@ public class MainWindow extends javax.swing.JFrame {
             sidePanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sidePanel2Layout.createSequentialGroup()
                 .addComponent(toolsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(403, Short.MAX_VALUE))
+                .addContainerGap(543, Short.MAX_VALUE))
         );
 
         mainPanel.add(sidePanel2, java.awt.BorderLayout.WEST);
@@ -343,6 +347,7 @@ public class MainWindow extends javax.swing.JFrame {
     private aurelienribon.leveleditor.ui.InfoPanel infoPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel mainPanel;
