@@ -7,6 +7,7 @@ import aurelienribon.leveleditor.TempSpriteManager;
 import aurelienribon.leveleditor.models.AssetInfo;
 import aurelienribon.leveleditor.models.LayerModel;
 import aurelienribon.leveleditor.models.SpriteModel;
+import aurelienribon.leveleditor.models.behaviors.Delimitable;
 import aurelienribon.leveleditor.renderpanel.modelrenderers.LayerRenderer;
 import aurelienribon.leveleditor.renderpanel.modelrenderers.SpriteRenderer;
 import aurelienribon.libgdx.Renderer2D;
@@ -131,6 +132,34 @@ public class MainRenderer extends Renderer2D {
 		}
 		
 		batch.end();
+
+		Delimitable mouseOverElem = LayersManager.instance().getMouseOverLayerChild();
+		Delimitable selectedElem = LayersManager.instance().getSelectedLayerChild();
+		camera.apply(gl);
+		gl.glEnable(GL10.GL_BLEND);
+		if (mouseOverElem != selectedElem)
+			drawBoundingBox(mouseOverElem, Theme.MOUSEOVER_BOUNDINGBOX_COLOR);
+		drawBoundingBoxWithHandles(selectedElem, Theme.SELECTED_BOUNDINGBOX_COLOR);
+	}
+
+	private void drawBoundingBox(Delimitable e, Color color) {
+		if (e == null)
+			return;
+		vec1.set(e.getX(), e.getY());
+		drawRect(vec1, e.getWidth(), e.getHeight(), color, 3);
+	}
+
+	private void drawBoundingBoxWithHandles(Delimitable e, Color color) {
+		if (e == null)
+			return;
+		float w = e.getWidth();
+		float h = e.getHeight();
+		float d = sd2w(10, 0).x;
+
+		vec1.set(e.getX(), e.getY());
+		drawRect(vec1, w, h, color, 3);
+
+		vec1.add(w/2, 0); drawRect(vec1, d, d, color, 3);
 	}
 
 	// -------------------------------------------------------------------------

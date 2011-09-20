@@ -3,6 +3,7 @@ package aurelienribon.leveleditor;
 import aurelienribon.leveleditor.renderpanel.RenderPanel;
 import aurelienribon.utils.ChangeListener;
 import aurelienribon.utils.Changeable;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,9 +20,18 @@ public class AppManager implements Changeable {
 	// -------------------------------------------------------------------------
 
 	private final RenderPanel renderPanel = new RenderPanel();
+	private Component renderCanvas;
 
 	public RenderPanel getRenderPanel() {
 		return renderPanel;
+	}
+
+	public Component getRenderCanvas() {
+		return renderCanvas;
+	}
+
+	public void setRenderCanvas(Component renderCanvas) {
+		this.renderCanvas = renderCanvas;
 	}
 
 	// -------------------------------------------------------------------------

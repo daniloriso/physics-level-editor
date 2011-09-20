@@ -221,9 +221,11 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 
 	private void addLayerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLayerBtnActionPerformed
 		String name = JOptionPane.showInputDialog(this, "Layer name?");
-		LayerModel layer = new LayerModel();
-		layer.setName(name);
-		LayersManager.instance().add(layer);
+		if (name != null) {
+			LayerModel layer = new LayerModel();
+			layer.setName(name);
+			LayersManager.instance().add(layer);
+		}
 	}//GEN-LAST:event_addLayerBtnActionPerformed
 
 	private void moveTopBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveTopBtnActionPerformed
@@ -325,6 +327,7 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 		{
 			iconLabel.setBorder(new EmptyBorder(0, 0, 0, 5));
 			nameLabel.setBorder(new EmptyBorder(0, 2, 0, 2));
+			panel.setOpaque(false);
 			panel.add(iconLabel, BorderLayout.WEST);
 			panel.add(nameLabel, BorderLayout.CENTER);
 		}
@@ -334,12 +337,13 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 			if ((value instanceof Nameable) == false)
 				return panel;
 
+			String name = ((Nameable)value).getName();
 			iconLabel.setIcon(iconsMap.get(value.getClass()));
-			nameLabel.setText(((Nameable)value).getName());
+			nameLabel.setText(name.equals("") ? "<unamed>" : name);
 
 			if (selected) {
-				nameLabel.setBackground(Theme.MAIN_BACKGROUND);
-				nameLabel.setForeground(Theme.MAIN_FOREGROUND);
+				nameLabel.setBackground(Theme.TEXTAREA_SELECTED_BACKGROUND);
+				nameLabel.setForeground(Theme.TEXTAREA_SELECTED_FOREGROUND);
 				nameLabel.setOpaque(true);
 			} else {
 				nameLabel.setForeground(Theme.TEXTAREA_FOREGROUND);
@@ -358,6 +362,7 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 			iconLabel.setBorder(new EmptyBorder(0, 0, 0, 5));
 			editorComponent.setBackground(Theme.TEXTAREA_BACKGROUND);
 			editorComponent.setForeground(Theme.TEXTAREA_FOREGROUND);
+			panel.setOpaque(false);
 			panel.add(iconLabel, BorderLayout.WEST);
 			panel.add(editorComponent, BorderLayout.CENTER);
 		}
@@ -375,6 +380,7 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 			assert value instanceof Renameable;
 			iconLabel.setIcon(iconsMap.get(value.getClass()));
 			((JTextField)editorComponent).setText(((Renameable)value).getName());
+			((JTextField)editorComponent).setColumns(15);
 			return panel;
 		}
 	};

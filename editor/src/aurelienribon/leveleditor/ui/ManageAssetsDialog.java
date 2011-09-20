@@ -5,10 +5,7 @@ import aurelienribon.leveleditor.models.AssetInfo;
 import aurelienribon.leveleditor.utils.AssetLoader;
 import aurelienribon.utils.MutableListModel;
 import java.awt.Component;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -407,8 +404,8 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 			label.setText(((AssetInfo)value).getPath());
 
 			if (isSelected) {
-				label.setBackground(Theme.MAIN_BACKGROUND);
-				label.setForeground(Theme.MAIN_FOREGROUND);
+				label.setBackground(Theme.TEXTAREA_SELECTED_BACKGROUND);
+				label.setForeground(Theme.TEXTAREA_SELECTED_FOREGROUND);
 				label.setOpaque(true);
 			} else {
 				label.setForeground(Theme.TEXTAREA_FOREGROUND);

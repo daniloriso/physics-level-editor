@@ -1,6 +1,7 @@
 package aurelienribon.leveleditor;
 
 import aurelienribon.leveleditor.models.AssetInfo;
+import aurelienribon.leveleditor.models.LayerModel;
 import aurelienribon.leveleditor.models.SpriteModel;
 import aurelienribon.utils.ChangeListener;
 import aurelienribon.utils.Changeable;
@@ -26,6 +27,14 @@ public class TempSpriteManager implements Changeable {
 
 	public SpriteModel getTempSprite() {
 		return tempSprite;
+	}
+
+	public void addSpriteToWorkingLayer() {
+		LayerModel layer = LayersManager.instance().getWorkingLayer();
+		if (layer != null) {
+			layer.add(tempSprite);
+			reload();
+		}
 	}
 
 	public boolean reload() {

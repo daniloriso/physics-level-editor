@@ -4,7 +4,6 @@ import aurelienribon.leveleditor.AppManager;
 import aurelienribon.leveleditor.LayersManager;
 import aurelienribon.leveleditor.TempSpriteManager;
 import aurelienribon.leveleditor.models.LayerModel;
-import aurelienribon.leveleditor.models.SpriteModel;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -24,15 +23,23 @@ public class InputProcessor extends InputAdapter {
 
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
-		AppManager app = AppManager.instance();
-		if (app.getInteractionMode() == AppManager.InteractionModes.ADD_SPRITES && button == Buttons.LEFT) {
-			SpriteModel sprite = TempSpriteManager.instance().getTempSprite();
-			LayerModel layer = LayersManager.instance().getWorkingLayer();
-			if (layer != null) {
-				layer.add(sprite);
-				TempSpriteManager.instance().reload();
+		if (button == Buttons.LEFT) {
+			AppManager app = AppManager.instance();
+			switch (app.getInteractionMode()) {
+				case ADD_SPRITES:
+					TempSpriteManager.instance().addSpriteToWorkingLayer();
+					break;
+
+				case SELECT:
+					LayerModel layer = LayersManager.instance().getWorkingLayer();
+					if (layer != null) {
+						Vector2 p = rdr.st2w(x, y);
+						LayersManager.instance().setSelectedLayerChild(layer.pickChild(p.x, p.y));
+					}
+					break;
 			}
 		}
+
 		lastTouch.set(x, y);
 		return true;
 	}
@@ -56,6 +63,16 @@ public class InputProcessor extends InputAdapter {
 
 	@Override
 	public boolean touchMoved(int x, int y) {
+		AppManager app = AppManager.instance();
+		switch (app.getInteractionMode()) {
+			case SELECT:
+				LayerModel layer = LayersManager.instance().getWorkingLayer();
+				if (layer != null) {
+					Vector2 p = rdr.st2w(x, y);
+					LayersManager.instance().setMouseOverLayerChild(layer.pickChild(p.x, p.y));
+				}
+				break;
+		}
 		return true;
 	}
 

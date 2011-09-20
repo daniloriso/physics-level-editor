@@ -2,6 +2,8 @@ package aurelienribon.leveleditor.models;
 
 import aurelienribon.leveleditor.models.behaviors.Hideable;
 import aurelienribon.leveleditor.models.behaviors.Renameable;
+import aurelienribon.leveleditor.models.behaviors.Delimitable;
+import aurelienribon.leveleditor.models.behaviors.Selectable;
 import aurelienribon.utils.ChangeListener;
 import aurelienribon.utils.Changeable;
 import aurelienribon.utils.ObservableList;
@@ -12,6 +14,18 @@ import java.util.List;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class LayerModel extends ObservableList<LayerChild> implements Changeable, Renameable, Hideable {
+	public Selectable pickChild(float x, float y) {
+		for (int i=size()-1; i>=0; i--)
+			if (get(i) instanceof Selectable && isOver((Selectable)get(i), x, y))
+				return (Selectable)get(i);
+		return null;
+	}
+
+	private boolean isOver(Delimitable c, float x, float y) {
+		return c.getX() <= x && x <= c.getX() + c.getWidth()
+			&& c.getY() <= y && y <= c.getY() + c.getHeight();
+	}
+
 	// -------------------------------------------------------------------------
 	// Changeable impl.
 	// -------------------------------------------------------------------------
@@ -37,7 +51,7 @@ public class LayerModel extends ObservableList<LayerChild> implements Changeable
 	// Renameable impl.
 	// -------------------------------------------------------------------------
 
-	private String name = "<unamed>";
+	private String name = "";
 
 	@Override
 	public String getName() {
@@ -46,7 +60,7 @@ public class LayerModel extends ObservableList<LayerChild> implements Changeable
 
 	@Override
 	public void setName(String name) {
-		this.name = name;
+		this.name = name != null ? name : "";
 		firePropertyChanged("name");
 	}
 

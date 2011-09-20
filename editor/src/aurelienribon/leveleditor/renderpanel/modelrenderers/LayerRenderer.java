@@ -22,8 +22,8 @@ public class LayerRenderer {
 
 	public void render(SpriteBatch batch) {
 		if (model.isVisible())
-			for (LayerChildRenderer child : childrenMap.values())
-				child.render(batch);
+			for (LayerChild childModel : model.getAll())
+				childrenMap.get(childModel).render(batch);
 	}
 
 	private final ListChangedListener<LayerChild> modelListChangedListener = new ListChangedListener<LayerChild>() {

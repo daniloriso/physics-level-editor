@@ -1,7 +1,9 @@
 package aurelienribon.leveleditor;
 
+import aurelienribon.leveleditor.models.LayerChild;
 import aurelienribon.utils.ObservableList;
 import aurelienribon.leveleditor.models.LayerModel;
+import aurelienribon.leveleditor.models.behaviors.Delimitable;
 import aurelienribon.utils.ChangeListener;
 import aurelienribon.utils.Changeable;
 import java.util.ArrayList;
@@ -23,12 +25,22 @@ public class LayersManager extends ObservableList<LayerModel> implements Changea
 	// -------------------------------------------------------------------------
 
 	private LayerModel workingLayer;
+	private Delimitable mouseOverLayerChild;
+	private Delimitable selectedLayerChild;
 
 	public LayersManager() {
 		LayerModel layer = new LayerModel();
 		layer.setName("Layer 1");
 		add(layer);
 		workingLayer = layer;
+
+		addListChangedListener(new ListChangedListener() {
+			@Override public void elementAdded(Object source, int idx, Object elem) {}
+			@Override public void elementRemoved(Object source, int idx, Object elem) {
+				if (elem == workingLayer)
+					setWorkingLayer(null);
+			}
+		});
 	}
 
 	public LayerModel getWorkingLayer() {
@@ -39,6 +51,25 @@ public class LayersManager extends ObservableList<LayerModel> implements Changea
 		this.workingLayer = workingLayer;
 		firePropertyChanged("workingLayer");
 	}
+
+	public Delimitable getMouseOverLayerChild() {
+		return mouseOverLayerChild;
+	}
+
+	public void setMouseOverLayerChild(Delimitable mouseOverLayerChild) {
+		this.mouseOverLayerChild = mouseOverLayerChild;
+		firePropertyChanged("mouseOverLayerChild");
+	}
+
+	public Delimitable getSelectedLayerChild() {
+		return selectedLayerChild;
+	}
+
+	public void setSelectedLayerChild(Delimitable selectedLayerChild) {
+		this.selectedLayerChild = selectedLayerChild;
+		firePropertyChanged("selectedLayerChild");
+	}
+
 	// -------------------------------------------------------------------------
 	// Changeable impl.
 	// -------------------------------------------------------------------------
