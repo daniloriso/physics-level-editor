@@ -17,11 +17,6 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <Component id="toggleVisibilityBtn" pref="189" max="32767" attributes="1"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="renameBtn" min="-2" max="-2" attributes="0"/>
-          </Group>
-          <Group type="102" alignment="1" attributes="0">
               <Component id="addLayerBtn" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="moveTopBtn" min="-2" max="-2" attributes="0"/>
@@ -49,11 +44,6 @@
                   <Component id="deleteBtn" min="-2" max="-2" attributes="0"/>
                   <Component id="moveTopBtn" min="-2" max="-2" attributes="0"/>
                   <Component id="addLayerBtn" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="toggleVisibilityBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="renameBtn" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
       </Group>
@@ -181,38 +171,6 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteBtnActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="toggleVisibilityBtn">
-      <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/aurelienribon/leveleditor/ui/gfx/ic_showHide.png"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Toggle visibility"/>
-        <Property name="horizontalAlignment" type="int" value="10"/>
-        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-          <Insets value="[2, 5, 2, 5]"/>
-        </Property>
-        <Property name="opaque" type="boolean" value="false"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="toggleVisibilityBtnActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="renameBtn">
-      <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/aurelienribon/leveleditor/ui/gfx/ic_rename.png"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Rename"/>
-        <Property name="horizontalAlignment" type="int" value="10"/>
-        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-          <Insets value="[2, 5, 2, 5]"/>
-        </Property>
-        <Property name="opaque" type="boolean" value="false"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="renameBtnActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

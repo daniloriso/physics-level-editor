@@ -9,7 +9,7 @@ import javax.swing.event.EventListenerList;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com
  */
-public abstract class ObservableList<T> {
+public class ObservableList<T> {
 	private final List<T> children = new ArrayList<T>();
 
 	public int size() {

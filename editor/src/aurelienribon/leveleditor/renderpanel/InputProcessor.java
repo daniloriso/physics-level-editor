@@ -5,6 +5,7 @@ import aurelienribon.leveleditor.LayersManager;
 import aurelienribon.leveleditor.SelectionManager;
 import aurelienribon.leveleditor.TempSpriteManager;
 import aurelienribon.leveleditor.models.LayerModel;
+import aurelienribon.leveleditor.models.behaviors.Selectable;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -35,7 +36,12 @@ public class InputProcessor extends InputAdapter {
 					LayerModel layer = LayersManager.instance().getWorkingLayer();
 					if (layer != null) {
 						Vector2 p = rdr.st2w(x, y);
-						SelectionManager.instance().setSelectedObject(layer.pickChild(p.x, p.y));
+						Selectable obj = layer.pickChild(p.x, p.y);
+						if (isCtrlPressed()) {
+							SelectionManager.instance().addSelectedObject(obj);
+						} else {
+							SelectionManager.instance().setSelectedObject(obj);
+						}
 					}
 					break;
 			}
@@ -103,5 +109,9 @@ public class InputProcessor extends InputAdapter {
 
 	private boolean isShiftPressed() {
 		return Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT);
+	}
+
+	private boolean isCtrlPressed() {
+		return Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
 	}
 }

@@ -24,6 +24,7 @@ public class SpriteRenderer implements LayerChildRenderer {
 		sprite.setPosition(model.getX(), model.getY());
 		sprite.setSize(model.getWidth(), model.getHeight());
 		sprite.setRotation(model.getRotation());
+		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 	}
 
 	private final ChangeListener modelChangeListener = new ChangeListener() {

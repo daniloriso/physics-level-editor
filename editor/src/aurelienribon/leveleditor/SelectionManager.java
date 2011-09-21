@@ -2,6 +2,9 @@ package aurelienribon.leveleditor;
 
 import aurelienribon.leveleditor.models.LayerModel;
 import aurelienribon.utils.ChangeableObject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com
@@ -18,20 +21,64 @@ public class SelectionManager extends ChangeableObject {
 	// Content
 	// -------------------------------------------------------------------------
 
-	private Object selectedObject;
+	private final List<Object> selectedObjects = new ArrayList<Object>();
 	private Object mouseOverObject;
 
-	public Object getSelectedObject() {
-		return selectedObject;
+	public List<Object> getSelectedObjects() {
+		return Collections.unmodifiableList(selectedObjects);
 	}
 
-	public void setSelectedObject(Object selectedObject) {
-		if (selectedObject == this.selectedObject)
+	public void setSelectedObject(Object obj) {
+		selectedObjects.clear();
+		if (obj != null)
+			selectedObjects.add(obj);
+		firePropertyChanged("selectedObjects");
+
+		if (obj instanceof LayerModel)
+			LayersManager.instance().setWorkingLayer((LayerModel)obj);
+	}
+
+	public void setSelectedObjects(List<Object> objs) {
+		assert !objs.contains(null);
+		selectedObjects.clear();
+		selectedObjects.addAll(objs);
+		firePropertyChanged("selectedObjects");
+	}
+
+	public void addSelectedObject(Object obj) {
+		if (obj == null)
 			return;
-		this.selectedObject = selectedObject;
-		if (selectedObject instanceof LayerModel)
-			LayersManager.instance().setWorkingLayer((LayerModel)selectedObject);
-		firePropertyChanged("selectedObject");
+		if (selectedObjects.contains(obj)) {
+			selectedObjects.remove(obj);
+		} else {
+			selectedObjects.add(obj);
+		}
+		firePropertyChanged("selectedObjects");
+	}
+
+	public void addSelectedObjects(List<Object> objs) {
+		for (Object obj : objs) {
+			if (obj == null)
+				continue;
+			if (selectedObjects.contains(obj)) {
+				selectedObjects.remove(obj);
+			} else {
+				selectedObjects.add(obj);
+			}
+		}
+		firePropertyChanged("selectedObjects");
+	}
+
+	public void removeSelectedObject(Object obj) {
+		assert obj != null;
+		selectedObjects.remove(obj);
+		firePropertyChanged("selectedObjects");
+	}
+
+	public void removeSelectedObjects(List<Object> objs) {
+		assert !objs.contains(null);
+		selectedObjects.removeAll(objs);
+		firePropertyChanged("selectedObjects");
 	}
 
 	public Object getMouseOverObject() {
@@ -39,9 +86,9 @@ public class SelectionManager extends ChangeableObject {
 	}
 
 	public void setMouseOverObject(Object mouseOverObject) {
-		if (mouseOverObject == this.mouseOverObject)
-			return;
-		this.mouseOverObject = mouseOverObject;
-		firePropertyChanged("mouseOverObject");
+		if (mouseOverObject != this.mouseOverObject) {
+			this.mouseOverObject = mouseOverObject;
+			firePropertyChanged("mouseOverObject");
+		}
 	}
 }

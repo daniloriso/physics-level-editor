@@ -8,39 +8,39 @@ import aurelienribon.leveleditor.ui.infopanels.SelectModeDefaultInfoPanel;
 import aurelienribon.leveleditor.ui.infopanels.SelectModeSpriteInfoPanel;
 import aurelienribon.leveleditor.ui.infopanels.SpritesModeInfoPanel;
 import aurelienribon.utils.ChangeListener;
-import aurelienribon.utils.Changeable;
 import java.awt.BorderLayout;
+import java.util.List;
 import javax.swing.JPanel;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com
  */
 public class InfoPanel extends JPanel {
-	private InfoPanelChild currentChild;
+	private final InfoPanelChild selectModeDefaultInfoPanel = new SelectModeDefaultInfoPanel();
+	private final InfoPanelChild selectModeSpriteInfoPanel = new SelectModeSpriteInfoPanel();
+	private final InfoPanelChild spritesModeInfoPanel = new SpritesModeInfoPanel();
+	private InfoPanelChild currentPanel;
 
 	public InfoPanel() {
 		super(new BorderLayout());
-		add(new SelectModeDefaultInfoPanel(), BorderLayout.CENTER);
+		setBackground(Theme.MAIN_ALT_BACKGROUND);
+		setPanel(selectModeDefaultInfoPanel);
 
 		AppManager.instance().addChangeListener(new ChangeListener() {
 			@Override public void propertyChanged(Object source, String propertyName) {
 				if (propertyName.equals("interactionMode")) {
-					removeAll();
-					if (currentChild != null)
-						currentChild.dispose();
 					switch (AppManager.instance().getInteractionMode()) {
 						case SELECT: updateSelectModeInfoPanel(); break;
-						case ADD_SPRITES: add(new SpritesModeInfoPanel(), BorderLayout.CENTER); break;
+						case ADD_SPRITES: setPanel(spritesModeInfoPanel); break;
 						default: assert false;
 					}
-					revalidate();
 				}
 			}
 		});
 
 		SelectionManager.instance().addChangeListener(new ChangeListener() {
 			@Override public void propertyChanged(Object source, String propertyName) {
-				if (propertyName.equals("selectedObject")) {
+				if (propertyName.equals("selectedObjects")) {
 					if (AppManager.instance().getInteractionMode() == InteractionModes.SELECT)
 						updateSelectModeInfoPanel();
 				}
@@ -48,23 +48,33 @@ public class InfoPanel extends JPanel {
 		});
 	}
 
-	private void updateSelectModeInfoPanel() {
+	private void setPanel(InfoPanelChild panel) {
+		if (currentPanel != null)
+			currentPanel.setModels(null);
+		currentPanel = panel;
+		currentPanel.setModels(SelectionManager.instance().getSelectedObjects());
 		removeAll();
-
-		Object obj = SelectionManager.instance().getSelectedObject();
-
-		if (obj == null) {
-			add(new SelectModeDefaultInfoPanel(), BorderLayout.CENTER);
-			revalidate();
-			return;
-		}
-
-		if (obj instanceof SpriteModel) {
-			SelectModeSpriteInfoPanel panel = new SelectModeSpriteInfoPanel();
-			panel.setModel((Changeable)obj);
-			add(panel, BorderLayout.CENTER);
-		}
-
+		add(currentPanel, BorderLayout.CENTER);
 		revalidate();
+		repaint();
+	}
+
+	private void updateSelectModeInfoPanel() {
+		List<Object> objs = SelectionManager.instance().getSelectedObjects();
+		if (getObjectsType(objs) == SpriteModel.class) {
+			setPanel(selectModeSpriteInfoPanel);
+		} else {
+			setPanel(selectModeDefaultInfoPanel);
+		}
+	}
+
+	private Class getObjectsType(List<Object> objs) {
+		if (objs.isEmpty())
+			return null;
+		Class ret = objs.get(0).getClass();
+		for (Object obj : objs)
+			if (obj.getClass() != ret)
+				return null;
+		return ret;
 	}
 }

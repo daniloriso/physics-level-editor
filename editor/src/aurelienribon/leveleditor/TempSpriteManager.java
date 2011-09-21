@@ -3,10 +3,7 @@ package aurelienribon.leveleditor;
 import aurelienribon.leveleditor.models.AssetInfo;
 import aurelienribon.leveleditor.models.LayerModel;
 import aurelienribon.leveleditor.models.SpriteModel;
-import aurelienribon.utils.ChangeListener;
 import aurelienribon.utils.ChangeableObject;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com

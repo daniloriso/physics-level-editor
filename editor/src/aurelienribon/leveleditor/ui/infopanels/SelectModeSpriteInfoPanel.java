@@ -4,29 +4,35 @@ import aurelienribon.leveleditor.models.SpriteModel;
 import aurelienribon.leveleditor.ui.InfoPanelChild;
 import aurelienribon.leveleditor.ui.Theme;
 import aurelienribon.utils.ChangeListener;
-import aurelienribon.utils.Changeable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com
  */
-public class SelectModeSpriteInfoPanel extends javax.swing.JPanel implements InfoPanelChild {
-	private SpriteModel model;
+public class SelectModeSpriteInfoPanel extends InfoPanelChild {
+	private final List<SpriteModel> models = new ArrayList<SpriteModel>();
 
     public SelectModeSpriteInfoPanel() {
         initComponents();
     }
 
 	@Override
-	public void setModel(Changeable model) {
-		this.model = (SpriteModel)model;
-		model.addChangeListener(modelListener);
-		update();
-	}
-
-	@Override
-	public void dispose() {
-		model.removeChangeListener(modelListener);
+	public void setModels(List<Object> objs) {
+		for (SpriteModel model : models)
+			model.removeChangeListener(modelListener);
+		models.clear();
+		if (objs != null) {
+			assert !objs.isEmpty();
+			for (Object obj : objs) {
+				models.add((SpriteModel)obj);
+				((SpriteModel)obj).addChangeListener(modelListener);
+			}
+			update();
+		}
 	}
 
 	private final ChangeListener modelListener = new ChangeListener() {
@@ -36,11 +42,66 @@ public class SelectModeSpriteInfoPanel extends javax.swing.JPanel implements Inf
 	};
 
 	private void update() {
-		xField.setText(String.format(Locale.US, "%.2f", model.getX()));
-		yField.setText(String.format(Locale.US, "%.2f", model.getY()));
-		wField.setText(String.format(Locale.US, "%.2f", model.getWidth()));
-		hField.setText(String.format(Locale.US, "%.2f", model.getHeight()));
-		rField.setText(String.format(Locale.US, "%.2f", model.getRotation()));
+		updateX();
+		updateY();
+		updateW();
+		updateH();
+		updateR();
+	}
+
+	private void updateX() {
+		float val = models.get(0).getX();
+		for (int i=1, n=models.size(); i<n; i++) {
+			if (models.get(i).getX() != val) {
+				xField.setText("---");
+				return;
+			}
+		}
+		xField.setText(String.format(Locale.US, "%.2f", val));
+	}
+
+	private void updateY() {
+		float val = models.get(0).getY();
+		for (int i=1, n=models.size(); i<n; i++) {
+			if (models.get(i).getY() != val) {
+				yField.setText("---");
+				return;
+			}
+		}
+		yField.setText(String.format(Locale.US, "%.2f", val));
+	}
+
+	private void updateW() {
+		float val = models.get(0).getWidth();
+		for (int i=1, n=models.size(); i<n; i++) {
+			if (models.get(i).getWidth() != val) {
+				wField.setText("---");
+				return;
+			}
+		}
+		wField.setText(String.format(Locale.US, "%.2f", val));
+	}
+
+	private void updateH() {
+		float val = models.get(0).getHeight();
+		for (int i=1, n=models.size(); i<n; i++) {
+			if (models.get(i).getHeight() != val) {
+				hField.setText("---");
+				return;
+			}
+		}
+		hField.setText(String.format(Locale.US, "%.2f", val));
+	}
+
+	private void updateR() {
+		float val = models.get(0).getRotation();
+		for (int i=1, n=models.size(); i<n; i++) {
+			if (models.get(i).getRotation() != val) {
+				rField.setText("---");
+				return;
+			}
+		}
+		rField.setText(String.format(Locale.US, "%.2f", val));
 	}
 
     @SuppressWarnings("unchecked")
@@ -57,8 +118,9 @@ public class SelectModeSpriteInfoPanel extends javax.swing.JPanel implements Inf
         hField = new javax.swing.JTextField();
         wField = new javax.swing.JTextField();
         rField = new javax.swing.JTextField();
+        updateBtn = new javax.swing.JButton();
 
-        setBackground(Theme.MAIN_ALT_BACKGROUND);
+        setOpaque(false);
 
         jLabel1.setForeground(Theme.MAIN_ALT_FOREGROUND);
         jLabel1.setText("x:");
@@ -95,6 +157,17 @@ public class SelectModeSpriteInfoPanel extends javax.swing.JPanel implements Inf
         rField.setForeground(Theme.TEXTAREA_FOREGROUND);
         rField.setText("---");
 
+        updateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_edit.png"))); // NOI18N
+        updateBtn.setText("Update");
+        updateBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        updateBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        updateBtn.setOpaque(false);
+        updateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -128,6 +201,10 @@ public class SelectModeSpriteInfoPanel extends javax.swing.JPanel implements Inf
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(rField, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(153, Short.MAX_VALUE)
+                .addComponent(updateBtn)
+                .addContainerGap())
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {hField, rField, wField, xField, yField});
@@ -139,27 +216,49 @@ public class SelectModeSpriteInfoPanel extends javax.swing.JPanel implements Inf
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(wField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(hField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(xField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(yField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(rField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel5)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(wField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(hField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(updateBtn)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+	private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
+		try {
+			Float x = parse(xField);
+			Float y = parse(yField);
+			Float w = parse(wField);
+			Float h = parse(hField);
+			Float r = parse(rField);
+			for (SpriteModel model : models) {
+				if (x != null) model.setPosition(x, model.getY());
+				if (y != null) model.setPosition(model.getX(), y);
+				if (w != null) model.setSize(w, model.getHeight());
+				if (h != null) model.setSize(model.getWidth(), h);
+				if (r != null) model.setRotation(r);
+			}
+		} catch (NumberFormatException ex) {
+			JOptionPane.showMessageDialog(this, "Invalid character somewhere (guess where).");
+		}
+	}//GEN-LAST:event_updateBtnActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField hField;
     private javax.swing.JLabel jLabel1;
@@ -168,9 +267,16 @@ public class SelectModeSpriteInfoPanel extends javax.swing.JPanel implements Inf
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JTextField rField;
+    private javax.swing.JButton updateBtn;
     private javax.swing.JTextField wField;
     private javax.swing.JTextField xField;
     private javax.swing.JTextField yField;
     // End of variables declaration//GEN-END:variables
 
+	private Float parse(JTextField field) {
+		String txt = field.getText();
+		if (txt.equals("---"))
+			return null;
+		return Float.parseFloat(txt);
+	}
 }

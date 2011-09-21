@@ -4,8 +4,7 @@ import aurelienribon.utils.ObservableList;
 import aurelienribon.leveleditor.models.LayerModel;
 import aurelienribon.utils.ChangeListener;
 import aurelienribon.utils.Changeable;
-import java.util.ArrayList;
-import java.util.List;
+import aurelienribon.utils.InnerChangeableObject;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -45,27 +44,22 @@ public class LayersManager extends ObservableList<LayerModel> implements Changea
 
 	public void setWorkingLayer(LayerModel workingLayer) {
 		this.workingLayer = workingLayer;
-		firePropertyChanged("workingLayer");
+		cho.firePropertyChanged(this, "workingLayer");
 	}
 
 	// -------------------------------------------------------------------------
 	// Changeable impl.
 	// -------------------------------------------------------------------------
 
-	private final List<ChangeListener> changeListeners = new ArrayList<ChangeListener>(3);
+	private final InnerChangeableObject cho = new InnerChangeableObject();
 
 	@Override
 	public void addChangeListener(ChangeListener l) {
-		changeListeners.add(l);
+		cho.addChangeListener(l);
 	}
 
 	@Override
 	public void removeChangeListener(ChangeListener l) {
-		changeListeners.add(l);
-	}
-
-	private void firePropertyChanged(String propertyName) {
-		for (ChangeListener listener : changeListeners)
-			listener.propertyChanged(this, propertyName);
+		cho.removeChangeListener(l);
 	}
 }

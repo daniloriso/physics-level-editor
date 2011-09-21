@@ -10,6 +10,7 @@ import aurelienribon.leveleditor.models.AssetInfo;
 import aurelienribon.leveleditor.models.LayerModel;
 import aurelienribon.leveleditor.models.SpriteModel;
 import aurelienribon.leveleditor.models.behaviors.Delimitable;
+import aurelienribon.leveleditor.models.behaviors.Resizable;
 import aurelienribon.leveleditor.renderpanel.modelrenderers.LayerRenderer;
 import aurelienribon.leveleditor.renderpanel.modelrenderers.SpriteRenderer;
 import aurelienribon.libgdx.Renderer2D;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -134,13 +136,18 @@ public class MainRenderer extends Renderer2D {
 		camera.apply(gl);
 		gl.glEnable(GL10.GL_BLEND);
 
-		Object sO = SelectionManager.instance().getSelectedObject();
-		Object mO = SelectionManager.instance().getMouseOverObject();
+		List<Object> selObjs = SelectionManager.instance().getSelectedObjects();
+		Object moverObj = SelectionManager.instance().getMouseOverObject();
 
-		if (sO instanceof Delimitable)
-			drawBoundingBoxWithHandles((Delimitable)sO, Theme.SELECTED_BOUNDINGBOX_COLOR);
-		if (mO != sO && mO instanceof Delimitable)
-			drawBoundingBox((Delimitable)mO, Theme.MOUSEOVER_BOUNDINGBOX_COLOR);
+		for (Object sO : selObjs) {
+			if (sO instanceof Delimitable && sO instanceof Resizable) {
+				drawBoundingBoxWithHandles((Delimitable)sO, Theme.SELECTED_BOUNDINGBOX_COLOR);
+			} else {
+				drawBoundingBox((Delimitable)sO, Theme.SELECTED_BOUNDINGBOX_COLOR);
+			}
+		}
+		if (!selObjs.contains(moverObj) && moverObj instanceof Delimitable)
+			drawBoundingBox((Delimitable)moverObj, Theme.MOUSEOVER_BOUNDINGBOX_COLOR);
 	}
 
 	private void drawBoundingBox(Delimitable e, Color color) {

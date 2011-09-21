@@ -14,8 +14,11 @@ import aurelienribon.utils.ObservableList;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
@@ -45,12 +48,18 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 		iconsMap.put(SpriteModel.class, new ImageIcon(ManageObjectsPanel.class.getResource("gfx/ic_texture.png")));
 
         initComponents();
-		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 		tree.setModel(treeModel);
 		tree.setCellRenderer(treeCellRenderer);
 		tree.setCellEditor(treeCellEditor);
-		tree.addTreeSelectionListener(treeSelectionListener);
-		updateUiState(null);
+		updateUiState();
+
+		tree.addTreeSelectionListener(new TreeSelectionListener() {
+			@Override public void valueChanged(TreeSelectionEvent e) {
+				SelectionManager.instance().setSelectedObjects(convertSelectedPaths());
+				updateUiState();
+			}
+		});
 
 		tree.getModel().addTreeModelListener(new TreeModelListener() {
 			@Override public void treeNodesChanged(TreeModelEvent e) {}
@@ -63,20 +72,32 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 
 		SelectionManager.instance().addChangeListener(new ChangeListener() {
 			@Override public void propertyChanged(Object source, String propertyName) {
-				if (propertyName.equals("selectedObject")) {
-					Object obj1 = SelectionManager.instance().getSelectedObject();
-					Object obj2 = tree.getSelectionPath() != null ? tree.getSelectionPath().getLastPathComponent() : null;
-					if (obj1 != null && obj1 != obj2) {
-						Object[] path = treeModel.getPathsMap().get(obj1);
-						assert path != null;
-						tree.setSelectionPath(new TreePath(path));
-					} else if (obj1 == null) {
-						tree.clearSelection();
-					}
+				if (propertyName.equals("selectedObjects")) {
+					List<Object> selObjs = SelectionManager.instance().getSelectedObjects();
+					List<Object> selObjsTree = convertSelectedPaths();
+					List<TreePath> toAdd = new ArrayList<TreePath>();
+					List<TreePath> toRem = new ArrayList<TreePath>();
+					for (Object obj : selObjs)
+						if (!selObjsTree.contains(obj))
+							toAdd.add(new TreePath(treeModel.getPathsMap().get(obj)));
+					for (Object obj : selObjsTree)
+						if (!selObjs.contains(obj))
+							toRem.add(new TreePath(treeModel.getPathsMap().get(obj)));
+					tree.addSelectionPaths(toAdd.toArray(new TreePath[0]));
+					tree.removeSelectionPaths(toRem.toArray(new TreePath[0]));
 				}
 			}
 		});
     }
+
+	private List<Object> convertSelectedPaths() {
+		List<Object> list = new ArrayList<Object>();
+		TreePath[] paths = tree.getSelectionPaths();
+		if (paths != null)
+			for (TreePath path : paths)
+				list.add(path.getLastPathComponent());
+		return Collections.unmodifiableList(list);
+	}
 	
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -90,8 +111,6 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
         moveDownBtn = new javax.swing.JButton();
         moveBottomBtn = new javax.swing.JButton();
         deleteBtn = new javax.swing.JButton();
-        toggleVisibilityBtn = new javax.swing.JButton();
-        renameBtn = new javax.swing.JButton();
 
         treeScrollPane.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, Theme.SEPARATOR));
         treeScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -164,36 +183,10 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
             }
         });
 
-        toggleVisibilityBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_showHide.png"))); // NOI18N
-        toggleVisibilityBtn.setText("Toggle visibility");
-        toggleVisibilityBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        toggleVisibilityBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
-        toggleVisibilityBtn.setOpaque(false);
-        toggleVisibilityBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                toggleVisibilityBtnActionPerformed(evt);
-            }
-        });
-
-        renameBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_rename.png"))); // NOI18N
-        renameBtn.setText("Rename");
-        renameBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        renameBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
-        renameBtn.setOpaque(false);
-        renameBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                renameBtnActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(toggleVisibilityBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(renameBtn))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(addLayerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -219,24 +212,9 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
                     .addComponent(moveBottomBtn)
                     .addComponent(deleteBtn)
                     .addComponent(moveTopBtn)
-                    .addComponent(addLayerBtn))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(toggleVisibilityBtn)
-                    .addComponent(renameBtn)))
+                    .addComponent(addLayerBtn)))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-	private void toggleVisibilityBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleVisibilityBtnActionPerformed
-		TreePath path = tree.getSelectionPath();
-		if (path != null) {
-			Object obj = path.getLastPathComponent();
-			if (obj instanceof Hideable) {
-				Hideable o = (Hideable)obj;
-				o.setVisible(!o.isVisible());
-			}
-		}
-	}//GEN-LAST:event_toggleVisibilityBtnActionPerformed
 
 	private void addLayerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLayerBtnActionPerformed
 		String name = JOptionPane.showInputDialog(this, "Layer name?");
@@ -301,23 +279,10 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 			Object child = path.getLastPathComponent();
 			ObservableList parent = (ObservableList) path.getPathComponent(path.getPathCount()-2);
 			parent.remove(child);
-			if (child == SelectionManager.instance().getSelectedObject())
-				SelectionManager.instance().setSelectedObject(null);
+			if (SelectionManager.instance().getSelectedObjects().contains(child))
+				SelectionManager.instance().removeSelectedObject(child);
 		}
 	}//GEN-LAST:event_deleteBtnActionPerformed
-
-	private void renameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renameBtnActionPerformed
-		TreePath path = tree.getSelectionPath();
-		if (path != null) {
-			Object obj = path.getLastPathComponent();
-			if (obj instanceof Renameable) {
-				Renameable o = (Renameable)obj;
-				String name = JOptionPane.showInputDialog(this, "New name?", o.getName());
-				if (name != null)
-					o.setName(name);
-			}
-		}
-	}//GEN-LAST:event_renameBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addLayerBtn;
@@ -326,8 +291,6 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
     private javax.swing.JButton moveDownBtn;
     private javax.swing.JButton moveTopBtn;
     private javax.swing.JButton moveUpBtn;
-    private javax.swing.JButton renameBtn;
-    private javax.swing.JButton toggleVisibilityBtn;
     private javax.swing.JTree tree;
     private javax.swing.JScrollPane treeScrollPane;
     // End of variables declaration//GEN-END:variables
@@ -405,25 +368,13 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 		}
 	};
 
-	private final TreeSelectionListener treeSelectionListener = new TreeSelectionListener() {
-		@Override
-		public void valueChanged(TreeSelectionEvent e) {
-			TreePath path = e.getNewLeadSelectionPath();
-			Object elem = path != null ? path.getLastPathComponent() : null;
-			updateUiState(elem);
-
-			if (elem != null && elem instanceof Delimitable)
-				SelectionManager.instance().setSelectedObject(elem);
-		}
-	};
-
-	private void updateUiState(Object selectedObj) {
-		renameBtn.setEnabled(selectedObj instanceof Renameable);
-		toggleVisibilityBtn.setEnabled(selectedObj instanceof Hideable);
-		moveTopBtn.setEnabled(selectedObj != null);
-		moveUpBtn.setEnabled(selectedObj != null);
-		moveDownBtn.setEnabled(selectedObj != null);
-		moveBottomBtn.setEnabled(selectedObj != null);
-		deleteBtn.setEnabled(selectedObj != null);
+	private void updateUiState() {
+		List<Object> objs = convertSelectedPaths();
+		
+		moveTopBtn.setEnabled(!objs.isEmpty());
+		moveUpBtn.setEnabled(!objs.isEmpty());
+		moveDownBtn.setEnabled(!objs.isEmpty());
+		moveBottomBtn.setEnabled(!objs.isEmpty());
+		deleteBtn.setEnabled(!objs.isEmpty());
 	}
 }
