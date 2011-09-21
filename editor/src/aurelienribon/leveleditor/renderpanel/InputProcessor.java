@@ -4,8 +4,10 @@ import aurelienribon.leveleditor.AppManager;
 import aurelienribon.leveleditor.LayersManager;
 import aurelienribon.leveleditor.SelectionManager;
 import aurelienribon.leveleditor.TempSpriteManager;
+import aurelienribon.leveleditor.models.LayerChild;
 import aurelienribon.leveleditor.models.LayerModel;
-import aurelienribon.leveleditor.models.behaviors.Selectable;
+import aurelienribon.leveleditor.models.behaviors.Measurable;
+import aurelienribon.libgdx.VectorHelper;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -18,6 +20,8 @@ import com.badlogic.gdx.math.Vector2;
 public class InputProcessor extends InputAdapter {
 	private final MainRenderer rdr;
 	private final Vector2 lastTouch = new Vector2();
+	private final Vector2 vec1 = new Vector2();
+	private final Vector2 vec2 = new Vector2();
 
 	public InputProcessor(MainRenderer rdr) {
 		this.rdr = rdr;
@@ -36,7 +40,7 @@ public class InputProcessor extends InputAdapter {
 					LayerModel layer = LayersManager.instance().getWorkingLayer();
 					if (layer != null) {
 						Vector2 p = rdr.st2w(x, y);
-						Selectable obj = layer.pickChild(p.x, p.y);
+						Measurable obj = pickLayerChild(layer, p.x, p.y);
 						if (isCtrlPressed()) {
 							SelectionManager.instance().addSelectedObject(obj);
 						} else {
@@ -76,7 +80,7 @@ public class InputProcessor extends InputAdapter {
 				LayerModel layer = LayersManager.instance().getWorkingLayer();
 				if (layer != null) {
 					Vector2 p = rdr.st2w(x, y);
-					SelectionManager.instance().setMouseOverObject(layer.pickChild(p.x, p.y));
+					SelectionManager.instance().setMouseOverObject(pickLayerChild(layer, p.x, p.y));
 				}
 				break;
 		}
@@ -113,5 +117,26 @@ public class InputProcessor extends InputAdapter {
 
 	private boolean isCtrlPressed() {
 		return Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
+	}
+
+	private Measurable pickLayerChild(LayerModel layer, float x, float y) {
+		for (int i=layer.size()-1; i>=0; i--) {
+			LayerChild child = layer.get(i);
+			if (child instanceof Measurable && isOver((Measurable)child, x, y))
+				return (Measurable)child;
+		}
+		return null;
+	}
+
+	private boolean isOver(Measurable c, float x, float y) {
+		vec1.set(x, y);
+		vec2.set(c.getX()+c.getWidth()/2, c.getY()+c.getHeight()/2);
+
+		float angle = c.getRotation();
+		if (angle != 0)
+			VectorHelper.rotate(vec1, vec2, -angle);
+
+		return c.getX() <= vec1.x && vec1.x <= c.getX() + c.getWidth()
+			&& c.getY() <= vec1.y && vec1.y <= c.getY() + c.getHeight();
 	}
 }

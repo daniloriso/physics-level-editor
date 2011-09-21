@@ -2,10 +2,8 @@ package aurelienribon.leveleditor.models;
 
 import aurelienribon.leveleditor.models.behaviors.Drawable;
 import aurelienribon.leveleditor.models.behaviors.Hideable;
-import aurelienribon.leveleditor.models.behaviors.Renameable;
-import aurelienribon.leveleditor.models.behaviors.Resizable;
-import aurelienribon.leveleditor.models.behaviors.Rotatable;
-import aurelienribon.leveleditor.models.behaviors.Selectable;
+import aurelienribon.leveleditor.models.behaviors.Measurable;
+import aurelienribon.leveleditor.models.behaviors.Nameable;
 import aurelienribon.utils.ChangeListener;
 import aurelienribon.utils.Changeable;
 import aurelienribon.utils.InnerChangeableObject;
@@ -15,7 +13,7 @@ import aurelienribon.utils.ObservableList;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class SpriteModel extends ObservableList<SpriteChild>
-	implements LayerChild, Drawable, Selectable, Resizable, Rotatable, Changeable, Renameable, Hideable {
+	implements LayerChild, Drawable, Measurable, Changeable, Nameable, Hideable {
 
 	public SpriteModel(AssetInfo info) {
 		this.info = info;
@@ -33,11 +31,14 @@ public class SpriteModel extends ObservableList<SpriteChild>
 	}
 
 	// -------------------------------------------------------------------------
-	// Positionable impl.
+	// Measurable impl.
 	// -------------------------------------------------------------------------
 
 	private float x;
 	private float y;
+	private float width;
+	private float height;
+	private float rotation;
 
 	@Override
 	public float getX() {
@@ -50,21 +51,6 @@ public class SpriteModel extends ObservableList<SpriteChild>
 	}
 
 	@Override
-	public void setPosition(float x, float y) {
-		this.x = x;
-		this.y = y;
-		cho.firePropertyChanged(this, "x");
-		cho.firePropertyChanged(this, "y");
-	}
-
-	// -------------------------------------------------------------------------
-	// Resizable impl.
-	// -------------------------------------------------------------------------
-
-	private float width;
-	private float height;
-
-	@Override
 	public float getWidth() {
 		return width;
 	}
@@ -74,23 +60,26 @@ public class SpriteModel extends ObservableList<SpriteChild>
 		return height;
 	}
 
+
+	@Override
+	public float getRotation() {
+		return rotation;
+	}
+
+	@Override
+	public void setPosition(float x, float y) {
+		this.x = x;
+		this.y = y;
+		cho.firePropertyChanged(this, "x");
+		cho.firePropertyChanged(this, "y");
+	}
+
 	@Override
 	public void setSize(float w, float h) {
 		this.width = w;
 		this.height = h;
 		cho.firePropertyChanged(this, "width");
 		cho.firePropertyChanged(this, "height");
-	}
-
-	// -------------------------------------------------------------------------
-	// Rotatable impl.
-	// -------------------------------------------------------------------------
-
-	private float rotation;
-
-	@Override
-	public float getRotation() {
-		return rotation;
 	}
 
 	@Override
@@ -116,7 +105,7 @@ public class SpriteModel extends ObservableList<SpriteChild>
 	}
 
 	// -------------------------------------------------------------------------
-	// Renameable impl.
+	// Nameable impl.
 	// -------------------------------------------------------------------------
 
 	private String name;

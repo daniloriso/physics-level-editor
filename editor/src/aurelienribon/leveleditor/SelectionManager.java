@@ -18,11 +18,10 @@ public class SelectionManager extends ChangeableObject {
 	public static SelectionManager instance() {return instance;}
 
 	// -------------------------------------------------------------------------
-	// Content
+	// Selected Objects
 	// -------------------------------------------------------------------------
 
 	private final List<Object> selectedObjects = new ArrayList<Object>();
-	private Object mouseOverObject;
 
 	public List<Object> getSelectedObjects() {
 		return Collections.unmodifiableList(selectedObjects);
@@ -43,6 +42,9 @@ public class SelectionManager extends ChangeableObject {
 		selectedObjects.clear();
 		selectedObjects.addAll(objs);
 		firePropertyChanged("selectedObjects");
+
+		if (objs.size() == 1 && objs.get(0) instanceof LayerModel)
+			LayersManager.instance().setWorkingLayer((LayerModel)objs.get(0));
 	}
 
 	public void addSelectedObject(Object obj) {
@@ -80,6 +82,22 @@ public class SelectionManager extends ChangeableObject {
 		selectedObjects.removeAll(objs);
 		firePropertyChanged("selectedObjects");
 	}
+
+	public boolean areSelectedObjectsSameType() {
+		if (selectedObjects.isEmpty())
+			return true;
+		Class type = selectedObjects.get(0).getClass();
+		for (Object obj : selectedObjects)
+			if (obj.getClass() != type)
+				return false;
+		return true;
+	}
+
+	// -------------------------------------------------------------------------
+	// MouseOver Object
+	// -------------------------------------------------------------------------
+
+	private Object mouseOverObject;
 
 	public Object getMouseOverObject() {
 		return mouseOverObject;

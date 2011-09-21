@@ -4,10 +4,7 @@ import aurelienribon.leveleditor.LayersManager;
 import aurelienribon.leveleditor.SelectionManager;
 import aurelienribon.leveleditor.models.SpriteModel;
 import aurelienribon.leveleditor.models.LayerModel;
-import aurelienribon.leveleditor.models.behaviors.Delimitable;
-import aurelienribon.leveleditor.models.behaviors.Hideable;
 import aurelienribon.leveleditor.models.behaviors.Nameable;
-import aurelienribon.leveleditor.models.behaviors.Renameable;
 import aurelienribon.utils.ChangeListener;
 import aurelienribon.utils.MutableTreeModel;
 import aurelienribon.utils.ObservableList;
@@ -298,8 +295,8 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 	private final MutableTreeModel treeModel = new MutableTreeModel(LayersManager.instance()) {
 		@Override
 		public void valueForPathChanged(TreePath path, Object newValue) {
-			assert path.getLastPathComponent() instanceof Renameable;
-			((Renameable)path.getLastPathComponent()).setName((String)newValue);
+			assert path.getLastPathComponent() instanceof Nameable;
+			((Nameable)path.getLastPathComponent()).setName((String)newValue);
 		}
 	};
 
@@ -352,7 +349,7 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 
 		@Override
 		public boolean isCellEditable(EventObject anEvent) {
-			boolean ret = tree.getLastSelectedPathComponent() instanceof Renameable;
+			boolean ret = tree.getLastSelectedPathComponent() instanceof Nameable;
 			if (anEvent instanceof MouseEvent)
 				ret &= ((MouseEvent)anEvent).getClickCount() >= 2;
 			return ret;
@@ -360,9 +357,9 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 
 		@Override
 		public Component getTreeCellEditorComponent(JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row) {
-			assert value instanceof Renameable;
+			assert value instanceof Nameable;
 			iconLabel.setIcon(iconsMap.get(value.getClass()));
-			((JTextField)editorComponent).setText(((Renameable)value).getName());
+			((JTextField)editorComponent).setText(((Nameable)value).getName());
 			((JTextField)editorComponent).setColumns(15);
 			return panel;
 		}
