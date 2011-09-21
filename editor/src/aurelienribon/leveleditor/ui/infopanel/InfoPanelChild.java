@@ -1,4 +1,4 @@
-package aurelienribon.leveleditor.ui;
+package aurelienribon.leveleditor.ui.infopanel;
 
 import java.util.List;
 import javax.swing.JPanel;

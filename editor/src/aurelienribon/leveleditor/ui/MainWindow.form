@@ -57,6 +57,7 @@
                       <Component id="wkCurrentLayerLbl" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
+                  <Component id="infoPanel" alignment="0" pref="557" max="32767" attributes="0"/>
                   <Component id="renderPanelHolder" alignment="1" pref="557" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
@@ -69,7 +70,9 @@
                           <Component id="wkCurrentLayerLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="renderPanelHolder" pref="595" max="32767" attributes="0"/>
+                      <Component id="renderPanelHolder" pref="534" max="32767" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="infoPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -104,6 +107,8 @@
                 <Property name="text" type="java.lang.String" value="&lt;no layer selected&gt;"/>
               </Properties>
             </Component>
+            <Component class="aurelienribon.leveleditor.ui.infopanel.InfoPanel" name="infoPanel">
+            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="sidePanel1">
@@ -128,9 +133,7 @@
                           <Component id="configPanel" alignment="0" max="32767" attributes="0"/>
                           <Component id="jLabel5" alignment="0" pref="288" max="32767" attributes="0"/>
                           <Component id="jLabel1" alignment="0" pref="288" max="32767" attributes="0"/>
-                          <Component id="jLabel2" alignment="1" pref="288" max="32767" attributes="0"/>
-                          <Component id="infoPanel" alignment="0" pref="288" max="32767" attributes="0"/>
-                          <Component id="jLabel3" alignment="0" pref="288" max="32767" attributes="0"/>
+                          <Component id="jLabel2" alignment="0" pref="288" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -145,14 +148,10 @@
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="configPanel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="objectsPanel" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="infoPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -308,7 +307,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="objManagerPanel" pref="291" max="32767" attributes="0"/>
+                          <Component id="objManagerPanel" pref="349" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -351,19 +350,6 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="-- Configuration"/>
               </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="jLabel3">
-              <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="12" style="1"/>
-                </Property>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="Theme.MAIN_FOREGROUND" type="code"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="-- Selection"/>
-              </Properties>
-            </Component>
-            <Component class="aurelienribon.leveleditor.ui.InfoPanel" name="infoPanel">
             </Component>
           </SubComponents>
         </Container>

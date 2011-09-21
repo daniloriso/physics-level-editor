@@ -1,6 +1,5 @@
-package aurelienribon.leveleditor.ui.infopanels;
+package aurelienribon.leveleditor.ui.infopanel;
 
-import aurelienribon.leveleditor.ui.InfoPanelChild;
 import aurelienribon.leveleditor.ui.Theme;
 import java.util.List;
 

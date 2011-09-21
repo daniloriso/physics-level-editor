@@ -64,6 +64,7 @@ public class MainWindow extends javax.swing.JFrame {
         renderPanelHolder = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         wkCurrentLayerLbl = new javax.swing.JLabel();
+        infoPanel = new aurelienribon.leveleditor.ui.infopanel.InfoPanel();
         sidePanel1 = new javax.swing.JPanel();
         configPanel = new javax.swing.JPanel();
         setLevelFileBtn = new javax.swing.JButton();
@@ -76,8 +77,6 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        infoPanel = new aurelienribon.leveleditor.ui.InfoPanel();
         sidePanel2 = new javax.swing.JPanel();
         toolsPanel = new aurelienribon.leveleditor.ui.ToolsPanel();
 
@@ -107,6 +106,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(wkCurrentLayerLbl)
                 .addContainerGap())
+            .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
             .addComponent(renderPanelHolder, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
         );
         workingPanelLayout.setVerticalGroup(
@@ -117,7 +117,9 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(jLabel6)
                     .addComponent(wkCurrentLayerLbl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(renderPanelHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 595, Short.MAX_VALUE)
+                .addComponent(renderPanelHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(infoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -227,7 +229,7 @@ public class MainWindow extends javax.swing.JFrame {
             objectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, objectsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(objManagerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
+                .addComponent(objManagerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -242,10 +244,6 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel1.setForeground(Theme.MAIN_FOREGROUND);
         jLabel1.setText("-- Configuration");
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel3.setForeground(Theme.MAIN_FOREGROUND);
-        jLabel3.setText("-- Selection");
-
         javax.swing.GroupLayout sidePanel1Layout = new javax.swing.GroupLayout(sidePanel1);
         sidePanel1.setLayout(sidePanel1Layout);
         sidePanel1Layout.setHorizontalGroup(
@@ -257,9 +255,7 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(configPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
-                    .addComponent(infoPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
                 .addContainerGap())
         );
         sidePanel1Layout.setVerticalGroup(
@@ -271,14 +267,10 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(configPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(objectsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(infoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -343,10 +335,9 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton cfgManageAssetsBtn1;
     private javax.swing.JButton cfgSaveLevelBtn;
     private javax.swing.JPanel configPanel;
-    private aurelienribon.leveleditor.ui.InfoPanel infoPanel;
+    private aurelienribon.leveleditor.ui.infopanel.InfoPanel infoPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel mainPanel;
