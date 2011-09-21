@@ -53,8 +53,8 @@ public class SpriteModel extends ObservableList<SpriteChild>
 	public void setPosition(float x, float y) {
 		this.x = x;
 		this.y = y;
-		cho.firePropertyChanged("x");
-		cho.firePropertyChanged("y");
+		cho.firePropertyChanged(this, "x");
+		cho.firePropertyChanged(this, "y");
 	}
 
 	// -------------------------------------------------------------------------
@@ -78,8 +78,8 @@ public class SpriteModel extends ObservableList<SpriteChild>
 	public void setSize(float w, float h) {
 		this.width = w;
 		this.height = h;
-		cho.firePropertyChanged("width");
-		cho.firePropertyChanged("height");
+		cho.firePropertyChanged(this, "width");
+		cho.firePropertyChanged(this, "height");
 	}
 
 	// -------------------------------------------------------------------------
@@ -96,7 +96,7 @@ public class SpriteModel extends ObservableList<SpriteChild>
 	@Override
 	public void setRotation(float rotation) {
 		this.rotation = rotation;
-		cho.firePropertyChanged("rotation");
+		cho.firePropertyChanged(this, "rotation");
 	}
 
 	// -------------------------------------------------------------------------
@@ -119,17 +119,19 @@ public class SpriteModel extends ObservableList<SpriteChild>
 	// Renameable impl.
 	// -------------------------------------------------------------------------
 
-	private String name = "";
+	private String name;
 
 	@Override
 	public String getName() {
+		if (name == null || name.equals(""))
+			name = "<unamed - " + info.getName() + ">";
 		return name;
 	}
 
 	@Override
 	public void setName(String name) {
-		this.name = name != null ? name : "";
-		cho.firePropertyChanged("name");
+		this.name = name;
+		cho.firePropertyChanged(this, "name");
 	}
 
 	// -------------------------------------------------------------------------
@@ -146,6 +148,6 @@ public class SpriteModel extends ObservableList<SpriteChild>
 	@Override
 	public void setVisible(boolean visible) {
 		this.visible = visible;
-		cho.firePropertyChanged("visible");
+		cho.firePropertyChanged(this, "visible");
 	}
 }

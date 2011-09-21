@@ -1,5 +1,6 @@
 package aurelienribon.utils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.event.EventListenerList;
@@ -72,6 +73,10 @@ public abstract class MutableTreeModel implements TreeModel {
 
 	private final Map<Object, Object[]> pathsMap = new HashMap<Object, Object[]>(100);
 
+	public Map<Object, Object[]> getPathsMap() {
+		return Collections.unmodifiableMap(pathsMap);
+	}
+
 	private void registerRoot(ObservableList root) {
 		pathsMap.put(root, new Object[] {root});
 		for (Object child : root.getAll())
@@ -119,18 +124,21 @@ public abstract class MutableTreeModel implements TreeModel {
 	// -------------------------------------------------------------------------
 
 	private void fireNodeAdded(Object parent, int childIdx, Object child) {
+		assert pathsMap.containsKey(parent);
 		TreeModelEvent evt = new TreeModelEvent(this, pathsMap.get(parent), new int[]{childIdx}, new Object[]{child});
 		for (TreeModelListener listener : listeners.getListeners(TreeModelListener.class))
 			listener.treeNodesInserted(evt);
 	}
 
 	private void fireNodeRemoved(Object parent, int childIdx, Object child) {
+		assert pathsMap.containsKey(parent);
 		TreeModelEvent evt = new TreeModelEvent(this, pathsMap.get(parent), new int[]{childIdx}, new Object[]{child});
 		for (TreeModelListener listener : listeners.getListeners(TreeModelListener.class))
 			listener.treeNodesRemoved(evt);
 	}
 
 	private void fireNodeChanged(Object parent) {
+		assert pathsMap.containsKey(parent);
 		TreeModelEvent evt = new TreeModelEvent(this, pathsMap.get(parent));
 		for (TreeModelListener listener : listeners.getListeners(TreeModelListener.class))
 			listener.treeNodesChanged(evt);

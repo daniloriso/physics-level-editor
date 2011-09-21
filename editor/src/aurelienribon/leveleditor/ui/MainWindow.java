@@ -49,8 +49,7 @@ public class MainWindow extends javax.swing.JFrame {
 				wkCurrentLayerLbl.setText("<no layer selected>");
 			} else if (!layer.getName().equals(wkCurrentLayerLbl.getText())) {
 				wkCurrentLayerLbl.setForeground(Theme.MAIN_FOREGROUND);
-				String name = layer.getName().equals("") ? "<unamed>" : layer.getName();
-				wkCurrentLayerLbl.setText(name);
+				wkCurrentLayerLbl.setText(layer.getName());
 			}
 		}
 	};

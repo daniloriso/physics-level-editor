@@ -45,17 +45,19 @@ public class LayerModel extends ObservableList<LayerChild> implements Changeable
 	// Renameable impl.
 	// -------------------------------------------------------------------------
 
-	private String name = "";
+	private String name;
 
 	@Override
 	public String getName() {
+		if (name == null || name.equals(""))
+			name = "<unamed layer>";
 		return name;
 	}
 
 	@Override
 	public void setName(String name) {
-		this.name = name != null ? name : "";
-		cho.firePropertyChanged("name");
+		this.name = name;
+		cho.firePropertyChanged(this, "name");
 	}
 
 	// -------------------------------------------------------------------------
@@ -72,6 +74,6 @@ public class LayerModel extends ObservableList<LayerChild> implements Changeable
 	@Override
 	public void setVisible(boolean visible) {
 		this.visible = visible;
-		cho.firePropertyChanged("visible");
+		cho.firePropertyChanged(this, "visible");
 	}
 }

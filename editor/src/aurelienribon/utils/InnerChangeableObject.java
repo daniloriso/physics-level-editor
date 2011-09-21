@@ -19,8 +19,8 @@ public class InnerChangeableObject implements Changeable {
 		changeListeners.remove(l);
 	}
 
-	public void firePropertyChanged(String propertyName) {
+	public void firePropertyChanged(Object source, String propertyName) {
 		for (ChangeListener listener : changeListeners)
-			listener.propertyChanged(this, propertyName);
+			listener.propertyChanged(source, propertyName);
 	}
 }

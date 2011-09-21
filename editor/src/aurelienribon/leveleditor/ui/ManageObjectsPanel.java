@@ -8,6 +8,7 @@ import aurelienribon.leveleditor.models.behaviors.Delimitable;
 import aurelienribon.leveleditor.models.behaviors.Hideable;
 import aurelienribon.leveleditor.models.behaviors.Nameable;
 import aurelienribon.leveleditor.models.behaviors.Renameable;
+import aurelienribon.utils.ChangeListener;
 import aurelienribon.utils.MutableTreeModel;
 import aurelienribon.utils.ObservableList;
 import java.awt.BorderLayout;
@@ -57,6 +58,22 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 			@Override public void treeStructureChanged(TreeModelEvent e) {}
 			@Override public void treeNodesInserted(TreeModelEvent e) {
 				tree.expandPath(e.getTreePath());
+			}
+		});
+
+		SelectionManager.instance().addChangeListener(new ChangeListener() {
+			@Override public void propertyChanged(Object source, String propertyName) {
+				if (propertyName.equals("selectedObject")) {
+					Object obj1 = SelectionManager.instance().getSelectedObject();
+					Object obj2 = tree.getSelectionPath() != null ? tree.getSelectionPath().getLastPathComponent() : null;
+					if (obj1 != null && obj1 != obj2) {
+						Object[] path = treeModel.getPathsMap().get(obj1);
+						assert path != null;
+						tree.setSelectionPath(new TreePath(path));
+					} else if (obj1 == null) {
+						tree.clearSelection();
+					}
+				}
 			}
 		});
     }
@@ -341,9 +358,8 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 			if ((value instanceof Nameable) == false)
 				return panel;
 
-			String name = ((Nameable)value).getName();
 			iconLabel.setIcon(iconsMap.get(value.getClass()));
-			nameLabel.setText(name.equals("") ? "<unamed>" : name);
+			nameLabel.setText(((Nameable)value).getName());
 
 			if (selected) {
 				nameLabel.setBackground(Theme.TEXTAREA_SELECTED_BACKGROUND);
