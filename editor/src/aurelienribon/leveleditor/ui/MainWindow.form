@@ -51,26 +51,31 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="infoPanel" alignment="0" pref="557" max="32767" attributes="0"/>
+                  <Component id="renderPanelHolder" alignment="1" pref="557" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
+                      <Component id="wkDuplicateBtn" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="wkCurrentLayerLbl" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
-                  <Component id="infoPanel" alignment="0" pref="557" max="32767" attributes="0"/>
-                  <Component id="renderPanelHolder" alignment="1" pref="557" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="wkCurrentLayerLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="wkDuplicateBtn" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" alignment="1" groupAlignment="2" attributes="0">
+                              <Component id="wkCurrentLayerLbl" alignment="2" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel6" alignment="2" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="renderPanelHolder" pref="534" max="32767" attributes="0"/>
+                      <Component id="renderPanelHolder" pref="505" max="32767" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="infoPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -79,21 +84,23 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Container class="javax.swing.JPanel" name="renderPanelHolder">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="Theme.MAIN_ALT_BACKGROUND" type="code"/>
-                </Property>
-              </Properties>
-
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
-            </Container>
             <Component class="javax.swing.JLabel" name="jLabel6">
               <Properties>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="Theme.MAIN_FOREGROUND" type="code"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Current layer:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="wkDuplicateBtn">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/aurelienribon/leveleditor/ui/gfx/ic_duplicate.png"/>
+                </Property>
+                <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[2, 5, 2, 5]"/>
+                </Property>
+                <Property name="opaque" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="wkCurrentLayerLbl">
@@ -107,6 +114,15 @@
                 <Property name="text" type="java.lang.String" value="&lt;no layer selected&gt;"/>
               </Properties>
             </Component>
+            <Container class="javax.swing.JPanel" name="renderPanelHolder">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="Theme.MAIN_ALT_BACKGROUND" type="code"/>
+                </Property>
+              </Properties>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+            </Container>
             <Component class="aurelienribon.leveleditor.ui.infopanel.InfoPanel" name="infoPanel">
             </Component>
           </SubComponents>
@@ -180,7 +196,7 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="cfgManageAssetsBtn" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="cfgManageAssetsBtn1" pref="155" max="32767" attributes="0"/>
+                                  <Component id="cfgLaunchBodyEditorBtn" pref="155" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -200,7 +216,7 @@
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="cfgManageAssetsBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="cfgManageAssetsBtn1" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="cfgLaunchBodyEditorBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
@@ -268,7 +284,7 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cfgManageAssetsBtnActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="cfgManageAssetsBtn1">
+                <Component class="javax.swing.JButton" name="cfgLaunchBodyEditorBtn">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/aurelienribon/leveleditor/ui/gfx/ic_pbe.png"/>
@@ -281,7 +297,7 @@
                     <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cfgManageAssetsBtn1ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cfgLaunchBodyEditorBtnActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>

@@ -6,7 +6,7 @@ import aurelienribon.utils.ObservableList;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class AssetsManager extends ObservableList<AssetInfo> {
+public class AssetsManager {
 	// -------------------------------------------------------------------------
 	// Singleton
 	// -------------------------------------------------------------------------
@@ -17,4 +17,10 @@ public class AssetsManager extends ObservableList<AssetInfo> {
 	// -------------------------------------------------------------------------
 	// Content
 	// -------------------------------------------------------------------------
+
+	private final ObservableList<AssetInfo> list = new ObservableList<AssetInfo>(this);
+
+	public ObservableList<AssetInfo> getList() {
+		return list;
+	}
 }

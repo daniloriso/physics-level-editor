@@ -5,8 +5,9 @@ import aurelienribon.leveleditor.SelectionManager;
 import aurelienribon.leveleditor.models.SpriteModel;
 import aurelienribon.leveleditor.models.LayerModel;
 import aurelienribon.leveleditor.models.behaviors.Nameable;
+import aurelienribon.utils.BaseTreeDataModel;
+import aurelienribon.utils.BaseTreeModel;
 import aurelienribon.utils.ChangeListener;
-import aurelienribon.utils.MutableTreeModel;
 import aurelienribon.utils.ObservableList;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -53,7 +54,9 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 			@Override public void valueChanged(TreeSelectionEvent e) {
-				SelectionManager.instance().setSelectedObjects(convertSelectedPaths());
+				SelectionManager.instance().select(null, true);
+				for (Object obj : convertSelectedPaths())
+					SelectionManager.instance().select(obj, false);
 				updateUiState();
 			}
 		});
@@ -70,7 +73,7 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 		SelectionManager.instance().addChangeListener(new ChangeListener() {
 			@Override public void propertyChanged(Object source, String propertyName) {
 				if (propertyName.equals("selectedObjects")) {
-					List<Object> selObjs = SelectionManager.instance().getSelectedObjects();
+					/*List<Object> selObjs = SelectionManager.instance().getSelectedObjects();
 					List<Object> selObjsTree = convertSelectedPaths();
 					List<TreePath> toAdd = new ArrayList<TreePath>();
 					List<TreePath> toRem = new ArrayList<TreePath>();
@@ -81,7 +84,7 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 						if (!selObjs.contains(obj))
 							toRem.add(new TreePath(treeModel.getPathsMap().get(obj)));
 					tree.addSelectionPaths(toAdd.toArray(new TreePath[0]));
-					tree.removeSelectionPaths(toRem.toArray(new TreePath[0]));
+					tree.removeSelectionPaths(toRem.toArray(new TreePath[0]));*/
 				}
 			}
 		});
@@ -218,7 +221,7 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 		if (name != null) {
 			LayerModel layer = new LayerModel();
 			layer.setName(name);
-			LayersManager.instance().add(layer);
+			LayersManager.instance().getList().add(layer);
 		}
 	}//GEN-LAST:event_addLayerBtnActionPerformed
 
@@ -277,7 +280,7 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 			ObservableList parent = (ObservableList) path.getPathComponent(path.getPathCount()-2);
 			parent.remove(child);
 			if (SelectionManager.instance().getSelectedObjects().contains(child))
-				SelectionManager.instance().removeSelectedObject(child);
+				SelectionManager.instance().select(child, false);
 		}
 	}//GEN-LAST:event_deleteBtnActionPerformed
 
@@ -292,13 +295,67 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane treeScrollPane;
     // End of variables declaration//GEN-END:variables
 
-	private final MutableTreeModel treeModel = new MutableTreeModel(LayersManager.instance()) {
+	// -------------------------------------------------------------------------
+	// TreeModel
+	// -------------------------------------------------------------------------
+
+	private final BaseTreeModel treeModel = new BaseTreeModel() {
+		{
+			registerDataModel(LayersManager.class, new BaseTreeDataModel<LayersManager>() {
+				@Override public List<ObservableList> getLists(final LayersManager model) {
+					return new ArrayList<ObservableList>() {{this.add(model.getList());}};
+				}});
+			registerElement(null, LayersManager.instance());
+		}
+
+		@Override
+		public Object getRoot() {
+			return LayersManager.instance();
+		}
+
+		@Override
+		public Object getChild(Object parent, int index) {
+			if (parent instanceof LayersManager) {
+				return ((LayersManager)parent).getList().get(index);
+			} else if (parent instanceof LayerModel) {
+				return ((LayerModel)parent).getSprites().get(index);
+			}
+
+			assert false;
+			return null;
+		}
+
+		@Override
+		public int getChildCount(Object parent) {
+			if (parent instanceof LayersManager) {
+				return ((LayersManager)parent).getList().size();
+			} else if (parent instanceof LayerModel) {
+				return ((LayerModel)parent).getSprites().size();
+			}
+
+			return 0;
+		}
+
+		@Override
+		public boolean isLeaf(Object node) {
+			return false;
+		}
+
 		@Override
 		public void valueForPathChanged(TreePath path, Object newValue) {
-			assert path.getLastPathComponent() instanceof Nameable;
-			((Nameable)path.getLastPathComponent()).setName((String)newValue);
+			Nameable obj = (Nameable)path.getLastPathComponent();
+			obj.setName((String)newValue);
+		}
+
+		@Override
+		public int getIndexOfChild(Object parent, Object child) {
+			return 0;
 		}
 	};
+
+	// -------------------------------------------------------------------------
+	// TreeCellRenderer
+	// -------------------------------------------------------------------------
 
 	private final TreeCellRenderer treeCellRenderer = new TreeCellRenderer() {
 		private final JPanel panel = new JPanel(new BorderLayout());
@@ -334,6 +391,10 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 		}
 	};
 
+	// -------------------------------------------------------------------------
+	// TreeCellEditor
+	// -------------------------------------------------------------------------
+
 	private final TreeCellEditor treeCellEditor = new DefaultCellEditor(new JTextField()) {
 		private final JPanel panel = new JPanel(new BorderLayout());
 		private final JLabel iconLabel = new JLabel();
@@ -364,6 +425,10 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
 			return panel;
 		}
 	};
+
+	// -------------------------------------------------------------------------
+	// Misc
+	// -------------------------------------------------------------------------
 
 	private void updateUiState() {
 		List<Object> objs = convertSelectedPaths();

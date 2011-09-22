@@ -148,7 +148,7 @@ public abstract class MutableTreeModel implements TreeModel {
 	// Listeners
 	// -------------------------------------------------------------------------
 
-	private final ObservableList.ListChangedListener modelListener = new ObservableList.ListChangedListener() {
+	private final ObservableList.ListChangeListener modelListener = new ObservableList.ListChangeListener() {
 		@Override
 		public void elementAdded(Object source, int idx, Object elem) {
 			registerElement(source, elem);

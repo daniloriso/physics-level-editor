@@ -1,33 +1,32 @@
 package aurelienribon.leveleditor.models;
 
-import aurelienribon.leveleditor.models.behaviors.Drawable;
 import aurelienribon.leveleditor.models.behaviors.Hideable;
 import aurelienribon.leveleditor.models.behaviors.Measurable;
 import aurelienribon.leveleditor.models.behaviors.Nameable;
 import aurelienribon.utils.ChangeListener;
 import aurelienribon.utils.Changeable;
 import aurelienribon.utils.InnerChangeableObject;
-import aurelienribon.utils.ObservableList;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class SpriteModel extends ObservableList<SpriteChild>
-	implements LayerChild, Drawable, Measurable, Changeable, Nameable, Hideable {
+public class SpriteModel implements Measurable, Changeable, Nameable, Hideable {
+	private final LayerModel parent;
+	private final AssetInfo asset;
 
-	public SpriteModel(AssetInfo info) {
-		this.info = info;
+	public SpriteModel(LayerModel parent, AssetInfo asset) {
+		assert parent != null;
+		assert asset != null;
+		this.parent = parent;
+		this.asset = asset;
 	}
 
-	// -------------------------------------------------------------------------
-	// Drawable impl.
-	// -------------------------------------------------------------------------
-
-	private final AssetInfo info;
-
-	@Override
 	public AssetInfo getAsset() {
-		return info;
+		return asset;
+	}
+
+	public LayerModel getParent() {
+		return parent;
 	}
 
 	// -------------------------------------------------------------------------
@@ -113,7 +112,7 @@ public class SpriteModel extends ObservableList<SpriteChild>
 	@Override
 	public String getName() {
 		if (name == null || name.equals(""))
-			name = "<unamed - " + info.getName() + ">";
+			name = "<unamed - " + asset.getName() + ">";
 		return name;
 	}
 

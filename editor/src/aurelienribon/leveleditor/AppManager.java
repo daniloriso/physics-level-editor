@@ -29,6 +29,7 @@ public class AppManager extends ChangeableObject {
 
 	public void setRenderCanvas(Component renderCanvas) {
 		this.renderCanvas = renderCanvas;
+		firePropertyChanged("renderCanvas");
 	}
 
 	// -------------------------------------------------------------------------

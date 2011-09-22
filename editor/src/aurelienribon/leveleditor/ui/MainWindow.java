@@ -61,9 +61,10 @@ public class MainWindow extends javax.swing.JFrame {
         toolsBtnGroup = new javax.swing.ButtonGroup();
         mainPanel = new javax.swing.JPanel();
         workingPanel = new javax.swing.JPanel();
-        renderPanelHolder = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
+        wkDuplicateBtn = new javax.swing.JButton();
         wkCurrentLayerLbl = new javax.swing.JLabel();
+        renderPanelHolder = new javax.swing.JPanel();
         infoPanel = new aurelienribon.leveleditor.ui.infopanel.InfoPanel();
         sidePanel1 = new javax.swing.JPanel();
         configPanel = new javax.swing.JPanel();
@@ -71,7 +72,7 @@ public class MainWindow extends javax.swing.JFrame {
         cfgSaveLevelBtn = new javax.swing.JButton();
         cfgLevelFileField = new javax.swing.JTextField();
         cfgManageAssetsBtn = new javax.swing.JButton();
-        cfgManageAssetsBtn1 = new javax.swing.JButton();
+        cfgLaunchBodyEditorBtn = new javax.swing.JButton();
         objectsPanel = new javax.swing.JPanel();
         objManagerPanel = new aurelienribon.leveleditor.ui.ManageObjectsPanel();
         jLabel5 = new javax.swing.JLabel();
@@ -87,37 +88,45 @@ public class MainWindow extends javax.swing.JFrame {
 
         workingPanel.setBackground(Theme.MAIN_BACKGROUND);
 
-        renderPanelHolder.setBackground(Theme.MAIN_ALT_BACKGROUND);
-        renderPanelHolder.setLayout(new java.awt.BorderLayout());
-
         jLabel6.setForeground(Theme.MAIN_FOREGROUND);
         jLabel6.setText("Current layer:");
+
+        wkDuplicateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_duplicate.png"))); // NOI18N
+        wkDuplicateBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        wkDuplicateBtn.setOpaque(false);
 
         wkCurrentLayerLbl.setFont(new java.awt.Font("Tahoma", 1, 11));
         wkCurrentLayerLbl.setForeground(Theme.MAIN_FOREGROUND);
         wkCurrentLayerLbl.setText("<no layer selected>");
 
+        renderPanelHolder.setBackground(Theme.MAIN_ALT_BACKGROUND);
+        renderPanelHolder.setLayout(new java.awt.BorderLayout());
+
         javax.swing.GroupLayout workingPanelLayout = new javax.swing.GroupLayout(workingPanel);
         workingPanel.setLayout(workingPanelLayout);
         workingPanelLayout.setHorizontalGroup(
             workingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
+            .addComponent(renderPanelHolder, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
             .addGroup(workingPanelLayout.createSequentialGroup()
+                .addComponent(wkDuplicateBtn)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(wkCurrentLayerLbl)
                 .addContainerGap())
-            .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
-            .addComponent(renderPanelHolder, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
         );
         workingPanelLayout.setVerticalGroup(
             workingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(workingPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, workingPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(workingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(wkCurrentLayerLbl))
+                .addGroup(workingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(wkDuplicateBtn)
+                    .addGroup(workingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                        .addComponent(wkCurrentLayerLbl)
+                        .addComponent(jLabel6)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(renderPanelHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
+                .addComponent(renderPanelHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(infoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -167,14 +176,14 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        cfgManageAssetsBtn1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_pbe.png"))); // NOI18N
-        cfgManageAssetsBtn1.setText("Launch Body Editor");
-        cfgManageAssetsBtn1.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        cfgManageAssetsBtn1.setMargin(new java.awt.Insets(2, 5, 2, 5));
-        cfgManageAssetsBtn1.setOpaque(false);
-        cfgManageAssetsBtn1.addActionListener(new java.awt.event.ActionListener() {
+        cfgLaunchBodyEditorBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_pbe.png"))); // NOI18N
+        cfgLaunchBodyEditorBtn.setText("Launch Body Editor");
+        cfgLaunchBodyEditorBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        cfgLaunchBodyEditorBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        cfgLaunchBodyEditorBtn.setOpaque(false);
+        cfgLaunchBodyEditorBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cfgManageAssetsBtn1ActionPerformed(evt);
+                cfgLaunchBodyEditorBtnActionPerformed(evt);
             }
         });
 
@@ -193,7 +202,7 @@ public class MainWindow extends javax.swing.JFrame {
                     .addGroup(configPanelLayout.createSequentialGroup()
                         .addComponent(cfgManageAssetsBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cfgManageAssetsBtn1, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)))
+                        .addComponent(cfgLaunchBodyEditorBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         configPanelLayout.setVerticalGroup(
@@ -208,7 +217,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(configPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cfgManageAssetsBtn)
-                    .addComponent(cfgManageAssetsBtn1))
+                    .addComponent(cfgLaunchBodyEditorBtn))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -236,7 +245,7 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/logo.png"))); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel2.setForeground(Theme.MAIN_FOREGROUND);
         jLabel2.setText("-- Objects");
 
@@ -325,14 +334,14 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 	}//GEN-LAST:event_cfgSaveLevelBtnActionPerformed
 
-	private void cfgManageAssetsBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cfgManageAssetsBtn1ActionPerformed
+	private void cfgLaunchBodyEditorBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cfgLaunchBodyEditorBtnActionPerformed
 		// TODO add your handling code here:
-	}//GEN-LAST:event_cfgManageAssetsBtn1ActionPerformed
+	}//GEN-LAST:event_cfgLaunchBodyEditorBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cfgLaunchBodyEditorBtn;
     private javax.swing.JTextField cfgLevelFileField;
     private javax.swing.JButton cfgManageAssetsBtn;
-    private javax.swing.JButton cfgManageAssetsBtn1;
     private javax.swing.JButton cfgSaveLevelBtn;
     private javax.swing.JPanel configPanel;
     private aurelienribon.leveleditor.ui.infopanel.InfoPanel infoPanel;
@@ -350,6 +359,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.ButtonGroup toolsBtnGroup;
     private aurelienribon.leveleditor.ui.ToolsPanel toolsPanel;
     private javax.swing.JLabel wkCurrentLayerLbl;
+    private javax.swing.JButton wkDuplicateBtn;
     private javax.swing.JPanel workingPanel;
     // End of variables declaration//GEN-END:variables
 

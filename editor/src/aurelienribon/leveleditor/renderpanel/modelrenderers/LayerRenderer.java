@@ -1,9 +1,8 @@
 package aurelienribon.leveleditor.renderpanel.modelrenderers;
 
-import aurelienribon.leveleditor.models.LayerChild;
 import aurelienribon.leveleditor.models.LayerModel;
 import aurelienribon.leveleditor.models.SpriteModel;
-import aurelienribon.utils.ObservableList.ListChangedListener;
+import aurelienribon.utils.ObservableList.ListChangeListener;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -13,33 +12,31 @@ import java.util.Map;
  */
 public class LayerRenderer {
 	private final LayerModel model;
-	private final Map<LayerChild, LayerChildRenderer> childrenMap = new LinkedHashMap<LayerChild, LayerChildRenderer>();
+	private final Map<SpriteModel, SpriteRenderer> spritesMap = new LinkedHashMap<SpriteModel, SpriteRenderer>();
 
 	public LayerRenderer(LayerModel model) {
 		this.model = model;
-		model.addListChangedListener(modelListChangedListener);
+		model.getSprites().addListChangedListener(modelSpritesChangedListener);
 	}
 
 	public void render(SpriteBatch batch) {
 		if (model.isVisible())
-			for (LayerChild childModel : model.getAll())
-				childrenMap.get(childModel).render(batch);
+			for (SpriteModel sprite : model.getSprites().getAll())
+				spritesMap.get(sprite).render(batch);
 	}
 
-	private final ListChangedListener<LayerChild> modelListChangedListener = new ListChangedListener<LayerChild>() {
+	private final ListChangeListener<SpriteModel> modelSpritesChangedListener = new ListChangeListener<SpriteModel>() {
 		@Override
-		public void elementAdded(Object source, int idx, LayerChild elem) {
-			assert !childrenMap.containsKey(elem);
-			if (elem instanceof SpriteModel) {
-				LayerChildRenderer childRdr = new SpriteRenderer((SpriteModel)elem);
-				childrenMap.put(elem, childRdr);
-			}
+		public void elementAdded(Object source, int idx, SpriteModel elem) {
+			assert !spritesMap.containsKey(elem);
+			SpriteRenderer spriteRdr = new SpriteRenderer(elem);
+			spritesMap.put(elem, spriteRdr);
 		}
 
 		@Override
-		public void elementRemoved(Object source, int idx, LayerChild elem) {
-			assert childrenMap.containsKey(elem);
-			childrenMap.remove(elem);
+		public void elementRemoved(Object source, int idx, SpriteModel elem) {
+			assert spritesMap.containsKey(elem);
+			spritesMap.remove(elem);
 		}
 	};
 }

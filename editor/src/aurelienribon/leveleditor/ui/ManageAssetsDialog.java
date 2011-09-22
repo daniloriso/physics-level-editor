@@ -23,7 +23,7 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 	public ManageAssetsDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
-		assetsList.setModel(new MutableListModel(AssetsManager.instance()));
+		assetsList.setModel(new MutableListModel(AssetsManager.instance().getList()));
 		assetsList.setCellRenderer(listCellRdr);
 	}
 
@@ -294,7 +294,7 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 			for (File file : chooser.getSelectedFiles()) {
 				AssetInfo info = AssetLoader.getAssetInfo(file.getPath());
-				AssetsManager.instance().add(info);
+				AssetsManager.instance().getList().add(info);
 			}
 		}
 	}//GEN-LAST:event_infoAddAssetBtnActionPerformed
@@ -303,8 +303,8 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 		Object[] os = assetsList.getSelectedValues();
 		for (int i=os.length-1; i>=0; i--) {
 			AssetInfo asset = (AssetInfo)os[i];
-			AssetsManager.instance().remove(asset);
-			AssetsManager.instance().add(0, asset);
+			AssetsManager.instance().getList().remove(asset);
+			AssetsManager.instance().getList().add(0, asset);
 		}
 		select(os);
 	}//GEN-LAST:event_ctrlMoveTopBtnActionPerformed
@@ -313,32 +313,32 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 		Object[] os = assetsList.getSelectedValues();
 		for (int i=os.length-1; i>=0; i--) {
 			AssetInfo asset = (AssetInfo)os[i];
-			int idx = AssetsManager.instance().indexOf(asset);
-			AssetsManager.instance().remove(asset);
-			AssetsManager.instance().add(idx > 0 ? idx-1 : 0, asset);
+			int idx = AssetsManager.instance().getList().indexOf(asset);
+			AssetsManager.instance().getList().remove(asset);
+			AssetsManager.instance().getList().add(idx > 0 ? idx-1 : 0, asset);
 		}
 		select(os);
 	}//GEN-LAST:event_ctrlMoveUpBtnActionPerformed
 
 	private void ctrlMoveDownBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlMoveDownBtnActionPerformed
 		Object[] os = assetsList.getSelectedValues();
-		int size = AssetsManager.instance().size();
+		int size = AssetsManager.instance().getList().size();
 		for (int i=os.length-1; i>=0; i--) {
 			AssetInfo asset = (AssetInfo)os[i];
-			int idx = AssetsManager.instance().indexOf(asset);
-			AssetsManager.instance().remove(asset);
-			AssetsManager.instance().add(idx < size-1 ? idx+1 : size-1, asset);
+			int idx = AssetsManager.instance().getList().indexOf(asset);
+			AssetsManager.instance().getList().remove(asset);
+			AssetsManager.instance().getList().add(idx < size-1 ? idx+1 : size-1, asset);
 		}
 		select(os);
 	}//GEN-LAST:event_ctrlMoveDownBtnActionPerformed
 
 	private void ctrlMoveBottomBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlMoveBottomBtnActionPerformed
 		Object[] os = assetsList.getSelectedValues();
-		int size = AssetsManager.instance().size();
+		int size = AssetsManager.instance().getList().size();
 		for (int i=0, n=os.length; i<n; i++) {
 			AssetInfo asset = (AssetInfo)os[i];
-			AssetsManager.instance().remove(asset);
-			AssetsManager.instance().add(size-1, asset);
+			AssetsManager.instance().getList().remove(asset);
+			AssetsManager.instance().getList().add(size-1, asset);
 		}
 		select(os);
 	}//GEN-LAST:event_ctrlMoveBottomBtnActionPerformed
@@ -346,7 +346,7 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 	private void ctrlDeleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ctrlDeleteBtnActionPerformed
 		int[] idxs = assetsList.getSelectedIndices();
 		for (int i=idxs.length-1; i>=0; i--)
-			AssetsManager.instance().remove(idxs[i]);
+			AssetsManager.instance().getList().remove(idxs[i]);
 	}//GEN-LAST:event_ctrlDeleteBtnActionPerformed
 
 	private void assetsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_assetsListValueChanged
@@ -358,7 +358,7 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 			infoSizeLbl.setText("---");
 			infoPreviewPanel.clearImage();
 		} else if (idxs.length == 1) {
-			AssetInfo asset = AssetsManager.instance().get(idxs[0]);
+			AssetInfo asset = AssetsManager.instance().getList().get(idxs[0]);
 			infoNameLbl.setText(asset.getName());
 			infoPathField.setText(asset.getPath());
 			infoDimensionsLbl.setText(asset.getWidth() + " x " + asset.getHeight());
@@ -420,7 +420,7 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 		if (assets.length > 0) {
 			int[] idxs = new int[assets.length];
 			for (int i=0, n=idxs.length; i<n; i++)
-				idxs[i] = AssetsManager.instance().indexOf((AssetInfo)assets[i]);
+				idxs[i] = AssetsManager.instance().getList().indexOf((AssetInfo)assets[i]);
 			assetsList.setSelectedIndices(idxs);
 		}
 	}

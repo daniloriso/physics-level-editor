@@ -50,10 +50,10 @@ public class Main {
 	private static void debug(MainWindow mw) {
 		mw.addWindowListener(new WindowAdapter() {
 			@Override public void windowOpened(WindowEvent e) {
-				AssetsManager.instance().add(AssetLoader.getAssetInfo("data/hero.png"));
-				AssetsManager.instance().add(AssetLoader.getAssetInfo("data/sun.png"));
-				AssetsManager.instance().add(AssetLoader.getAssetInfo("data/platform1.png"));
-				AssetsManager.instance().add(AssetLoader.getAssetInfo("data/platform2.png"));
+				AssetsManager.instance().getList().add(AssetLoader.getAssetInfo("data/hero.png"));
+				AssetsManager.instance().getList().add(AssetLoader.getAssetInfo("data/sun.png"));
+				AssetsManager.instance().getList().add(AssetLoader.getAssetInfo("data/platform1.png"));
+				AssetsManager.instance().getList().add(AssetLoader.getAssetInfo("data/platform2.png"));
 			}
 		});
 	}

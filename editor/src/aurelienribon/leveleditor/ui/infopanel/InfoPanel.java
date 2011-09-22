@@ -64,20 +64,10 @@ public class InfoPanel extends JPanel {
 
 	private void updateSelectModeInfoPanel() {
 		List<Object> objs = SelectionManager.instance().getSelectedObjects();
-		if (getObjectsType(objs) == SpriteModel.class) {
+		if (SelectionManager.instance().getSelectedObjectsType() == SpriteModel.class) {
 			setPanel("SELECT_SPRITES");
 		} else {
 			setPanel("SELECT_DEFAULT");
 		}
-	}
-
-	private Class getObjectsType(List<Object> objs) {
-		if (objs.isEmpty())
-			return null;
-		Class ret = objs.get(0).getClass();
-		for (Object obj : objs)
-			if (obj.getClass() != ret)
-				return null;
-		return ret;
 	}
 }

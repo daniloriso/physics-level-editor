@@ -11,6 +11,19 @@ import javax.swing.event.EventListenerList;
  */
 public class ObservableList<T> {
 	private final List<T> children = new ArrayList<T>();
+	private final Object source;
+
+	public ObservableList() {
+		this.source = null;
+	}
+
+	public ObservableList(Object source) {
+		this.source = source;
+	}
+
+	// -------------------------------------------------------------------------
+	// API
+	// -------------------------------------------------------------------------
 
 	public int size() {
 		return children.size();
@@ -61,32 +74,37 @@ public class ObservableList<T> {
 		return elem;
 	}
 
+	public void clear() {
+		for (int i=size()-1; i>=0; i--)
+			remove(i);
+	}
+
 	// -------------------------------------------------------------------------
 	// Events
 	// -------------------------------------------------------------------------
 
 	private final EventListenerList listeners = new EventListenerList();
 
-	public interface ListChangedListener<T> extends EventListener {
+	public interface ListChangeListener<T> extends EventListener {
 		public void elementAdded(Object source, int idx, T elem);
 		public void elementRemoved(Object source, int idx, T elem);
 	}
 
-	public void addListChangedListener(ListChangedListener listener) {
-		listeners.add(ListChangedListener.class, listener);
+	public void addListChangedListener(ListChangeListener listener) {
+		listeners.add(ListChangeListener.class, listener);
 	}
 
-	public void removeListChangedListener(ListChangedListener listener) {
-		listeners.remove(ListChangedListener.class, listener);
+	public void removeListChangedListener(ListChangeListener listener) {
+		listeners.remove(ListChangeListener.class, listener);
 	}
 
 	private void fireElementAdded(int idx, T elem) {
-		for (ListChangedListener listener : listeners.getListeners(ListChangedListener.class))
-			listener.elementAdded(this, idx, elem);
+		for (ListChangeListener listener : listeners.getListeners(ListChangeListener.class))
+			listener.elementAdded(source != null ? source : this, idx, elem);
 	}
 
 	private void fireElementRemoved(int idx, T elem) {
-		for (ListChangedListener listener : listeners.getListeners(ListChangedListener.class))
-			listener.elementRemoved(this, idx, elem);
+		for (ListChangeListener listener : listeners.getListeners(ListChangeListener.class))
+			listener.elementRemoved(source != null ? source : this, idx, elem);
 	}
 }

@@ -4,6 +4,7 @@ import aurelienribon.leveleditor.models.AssetInfo;
 import aurelienribon.leveleditor.models.LayerModel;
 import aurelienribon.leveleditor.models.SpriteModel;
 import aurelienribon.utils.ChangeableObject;
+import aurelienribon.utils.ObservableList;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com
@@ -27,21 +28,21 @@ public class TempSpriteManager extends ChangeableObject {
 	}
 
 	public void addSpriteToWorkingLayer() {
-		LayerModel layer = LayersManager.instance().getWorkingLayer();
-		if (layer != null && tempSprite != null) {
-			layer.add(tempSprite);
+		if (tempSprite != null) {
+			LayerModel layer = tempSprite.getParent();
+			layer.getSprites().add(tempSprite);
 			reload();
 		}
 	}
 
 	public boolean reload() {
-		AssetsManager am = AssetsManager.instance();
-		if (am.isEmpty()) {
+		ObservableList<AssetInfo> assets = AssetsManager.instance().getList();
+		if (assets.isEmpty()) {
 			tempSprite = null;
 			firePropertyChanged("tempSprite");
 			return true;
-		} else if (tempSprite == null || !am.contains(tempSprite.getAsset())) {
-			tempSprite = createSprite(am.get(0));
+		} else if (tempSprite == null || !assets.contains(tempSprite.getAsset())) {
+			tempSprite = createSprite(assets.get(0));
 			firePropertyChanged("tempSprite");
 			return true;
 		} else {
@@ -52,26 +53,27 @@ public class TempSpriteManager extends ChangeableObject {
 	}
 
 	public void next() {
-		AssetsManager am = AssetsManager.instance();
+		ObservableList<AssetInfo> assets = AssetsManager.instance().getList();
 		if (reload() == false) {
-			int id = (am.indexOf(tempSprite.getAsset())+1) % am.size();
-			tempSprite = createSprite(am.get(id));
+			int id = (assets.indexOf(tempSprite.getAsset())+1) % assets.size();
+			tempSprite = createSprite(assets.get(id));
 			firePropertyChanged("tempSprite");
 		}
 	}
 
 	public void previous() {
-		AssetsManager am = AssetsManager.instance();
+		ObservableList<AssetInfo> assets = AssetsManager.instance().getList();
 		if (reload() == false) {
-			int id = (am.indexOf(tempSprite.getAsset())-1) % am.size();
-			tempSprite = createSprite(am.get(id));
+			int id = (assets.indexOf(tempSprite.getAsset())-1) % assets.size();
+			tempSprite = createSprite(assets.get(id));
 			firePropertyChanged("tempSprite");
 		}
 	}
 
 	private SpriteModel createSprite(AssetInfo asset) {
 		assert asset != null;
-		SpriteModel sprite = new SpriteModel(asset);
+		LayerModel layer = LayersManager.instance().getWorkingLayer();
+		SpriteModel sprite = new SpriteModel(layer, asset);
 		sprite.setSize(asset.getWidth()/50f, asset.getHeight()/50f);
 		return sprite;
 	}

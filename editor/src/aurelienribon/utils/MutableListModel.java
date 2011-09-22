@@ -67,7 +67,7 @@ public class MutableListModel implements ListModel {
 	// Listeners
 	// -------------------------------------------------------------------------
 
-	private final ObservableList.ListChangedListener modelListener = new ObservableList.ListChangedListener() {
+	private final ObservableList.ListChangeListener modelListener = new ObservableList.ListChangeListener() {
 		@Override
 		public void elementAdded(Object source, int idx, Object elem) {
 			fireIntervalAdded(idx, idx);

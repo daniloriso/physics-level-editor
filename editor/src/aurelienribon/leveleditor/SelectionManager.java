@@ -1,6 +1,7 @@
 package aurelienribon.leveleditor;
 
 import aurelienribon.leveleditor.models.LayerModel;
+import aurelienribon.leveleditor.models.SpriteModel;
 import aurelienribon.utils.ChangeableObject;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,92 +22,75 @@ public class SelectionManager extends ChangeableObject {
 	// Selected Objects
 	// -------------------------------------------------------------------------
 
+	private final List<SpriteModel> selectedSprites = new ArrayList<SpriteModel>();
 	private final List<Object> selectedObjects = new ArrayList<Object>();
+
+	public List<SpriteModel> getSelectedSprites() {
+		return Collections.unmodifiableList(selectedSprites);
+	}
 
 	public List<Object> getSelectedObjects() {
 		return Collections.unmodifiableList(selectedObjects);
 	}
 
-	public void setSelectedObject(Object obj) {
-		selectedObjects.clear();
-		if (obj != null)
+	/**
+	 * Adds an object to the selection list. if already selected, removes it
+	 * from the list instead.
+	 * @param obj The object to select
+	 * @param override True if the selection lists must be cleared first
+	 */
+	public void select(Object obj, boolean override) {
+		if (override) {
+			selectedSprites.clear();
+			selectedObjects.clear();
+		}
+
+		if (obj == null) {
+			firePropertyChanged("selectedObjects");
+			return;
+		}
+
+		if (selectedObjects.contains(obj)) {
+			if (obj instanceof SpriteModel)
+				selectedSprites.remove((SpriteModel)obj);
+			selectedObjects.remove(obj);
+		} else {
+			if (obj instanceof SpriteModel)
+				selectedSprites.add((SpriteModel)obj);
 			selectedObjects.add(obj);
+		}
+
 		firePropertyChanged("selectedObjects");
 
 		if (obj instanceof LayerModel)
 			LayersManager.instance().setWorkingLayer((LayerModel)obj);
 	}
 
-	public void setSelectedObjects(List<Object> objs) {
-		assert !objs.contains(null);
-		selectedObjects.clear();
-		selectedObjects.addAll(objs);
-		firePropertyChanged("selectedObjects");
-
-		if (objs.size() == 1 && objs.get(0) instanceof LayerModel)
-			LayersManager.instance().setWorkingLayer((LayerModel)objs.get(0));
-	}
-
-	public void addSelectedObject(Object obj) {
-		if (obj == null)
-			return;
-		if (selectedObjects.contains(obj)) {
-			selectedObjects.remove(obj);
-		} else {
-			selectedObjects.add(obj);
-		}
-		firePropertyChanged("selectedObjects");
-	}
-
-	public void addSelectedObjects(List<Object> objs) {
-		for (Object obj : objs) {
-			if (obj == null)
-				continue;
-			if (selectedObjects.contains(obj)) {
-				selectedObjects.remove(obj);
-			} else {
-				selectedObjects.add(obj);
-			}
-		}
-		firePropertyChanged("selectedObjects");
-	}
-
-	public void removeSelectedObject(Object obj) {
-		assert obj != null;
-		selectedObjects.remove(obj);
-		firePropertyChanged("selectedObjects");
-	}
-
-	public void removeSelectedObjects(List<Object> objs) {
-		assert !objs.contains(null);
-		selectedObjects.removeAll(objs);
-		firePropertyChanged("selectedObjects");
-	}
-
-	public boolean areSelectedObjectsSameType() {
+	/**
+	 * Gets the common class of all the objects, or null if the objects are not
+	 * all from the same class, or if the selection list is empty.
+	 */
+	public Class getSelectedObjectsType() {
 		if (selectedObjects.isEmpty())
-			return true;
+			return null;
 		Class type = selectedObjects.get(0).getClass();
 		for (Object obj : selectedObjects)
 			if (obj.getClass() != type)
-				return false;
-		return true;
+				return null;
+		return type;
 	}
 
 	// -------------------------------------------------------------------------
 	// MouseOver Object
 	// -------------------------------------------------------------------------
 
-	private Object mouseOverObject;
+	private SpriteModel mouseOverSprite;
 
-	public Object getMouseOverObject() {
-		return mouseOverObject;
+	public SpriteModel getMouseOverSprite() {
+		return mouseOverSprite;
 	}
 
-	public void setMouseOverObject(Object mouseOverObject) {
-		if (mouseOverObject != this.mouseOverObject) {
-			this.mouseOverObject = mouseOverObject;
-			firePropertyChanged("mouseOverObject");
-		}
+	public void setMouseOverSprite(SpriteModel mouseOverSprite) {
+		this.mouseOverSprite = mouseOverSprite;
 	}
 }

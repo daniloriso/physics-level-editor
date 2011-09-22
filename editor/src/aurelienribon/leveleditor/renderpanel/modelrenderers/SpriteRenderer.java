@@ -9,14 +9,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com
  */
-public class SpriteRenderer implements LayerChildRenderer {
+public class SpriteRenderer {
 	private final SpriteModel model;
 	private final Sprite sprite;
 
 	public SpriteRenderer(SpriteModel model) {
 		this.model = model;
-		model.addChangeListener(modelChangeListener);
 		this.sprite = new Sprite(AssetLoader.getAssetTexture(model.getAsset()));
+		model.addChangeListener(modelChangeListener);
 		update();
 	}
 
@@ -33,11 +33,6 @@ public class SpriteRenderer implements LayerChildRenderer {
 		}
 	};
 
-	// -------------------------------------------------------------------------
-	// LayerChildRenderer impl.
-	// -------------------------------------------------------------------------
-
-	@Override
 	public void render(SpriteBatch batch) {
 		sprite.draw(batch);
 	}

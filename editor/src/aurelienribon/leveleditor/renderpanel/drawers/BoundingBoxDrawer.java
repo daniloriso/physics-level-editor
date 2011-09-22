@@ -1,6 +1,7 @@
 package aurelienribon.leveleditor.renderpanel.drawers;
 
 import aurelienribon.leveleditor.SelectionManager;
+import aurelienribon.leveleditor.models.SpriteModel;
 import aurelienribon.leveleditor.models.behaviors.Measurable;
 import aurelienribon.leveleditor.renderpanel.Theme;
 import aurelienribon.libgdx.Renderer2D;
@@ -25,24 +26,23 @@ public class BoundingBoxDrawer {
 	public void drawBoundingBoxes(GL10 gl) {
 		gl.glEnable(GL10.GL_BLEND);
 
-		List<Object> selObjs = SelectionManager.instance().getSelectedObjects();
-		Object moverObj = SelectionManager.instance().getMouseOverObject();
+		List<SpriteModel> sprites = SelectionManager.instance().getSelectedSprites();
+		SpriteModel moSprite = SelectionManager.instance().getMouseOverSprite();
 
-		if (SelectionManager.instance().areSelectedObjectsSameType())
-			for (Object obj : selObjs)
-				if (obj instanceof Measurable)
-					drawBoundingBox(gl, (Measurable)obj, true, Theme.SELECTED_BOUNDINGBOX_COLOR);
+		if (SelectionManager.instance().getSelectedObjectsType() != null)
+			for (SpriteModel sprite : sprites)
+				drawBoundingBox(gl, sprite, true, Theme.SELECTED_BOUNDINGBOX_COLOR);
 
-		if (!selObjs.contains(moverObj) && moverObj instanceof Measurable)
-			drawBoundingBox(gl, (Measurable)moverObj, false, Theme.MOUSEOVER_BOUNDINGBOX_COLOR);
+		if (moSprite != null && !sprites.contains(moSprite))
+			drawBoundingBox(gl, moSprite, false, Theme.MOUSEOVER_BOUNDINGBOX_COLOR);
 	}
 
-	private void drawBoundingBox(GL10 gl, Measurable e, boolean showHandles, Color color) {
-		float x = e.getX();
-		float y = e.getY();
-		float w = e.getWidth();
-		float h = e.getHeight();
-		float angle = ((Measurable)e).getRotation();
+	private void drawBoundingBox(GL10 gl, Measurable m, boolean showHandles, Color color) {
+		float x = m.getX();
+		float y = m.getY();
+		float w = m.getWidth();
+		float h = m.getHeight();
+		float angle = m.getRotation();
 		boolean rotate = angle != 0;
 
 		if (rotate) {

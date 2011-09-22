@@ -10,7 +10,13 @@ import aurelienribon.utils.ObservableList;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class LayerModel extends ObservableList<LayerChild> implements Changeable, Nameable, Hideable {
+public class LayerModel implements Changeable, Nameable, Hideable {
+	private final ObservableList<SpriteModel> sprites = new ObservableList<SpriteModel>(this);
+
+	public ObservableList<SpriteModel> getSprites() {
+		return sprites;
+	}
+
 	// -------------------------------------------------------------------------
 	// Changeable impl.
 	// -------------------------------------------------------------------------

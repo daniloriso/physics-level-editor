@@ -4,11 +4,12 @@ import aurelienribon.leveleditor.AppManager;
 import aurelienribon.leveleditor.LayersManager;
 import aurelienribon.leveleditor.SelectionManager;
 import aurelienribon.leveleditor.TempSpriteManager;
-import aurelienribon.leveleditor.models.LayerChild;
 import aurelienribon.leveleditor.models.LayerModel;
+import aurelienribon.leveleditor.models.SpriteModel;
 import aurelienribon.leveleditor.models.behaviors.Measurable;
 import aurelienribon.leveleditor.utils.DragHelper;
 import aurelienribon.leveleditor.utils.DragHelper.DragActions;
+import aurelienribon.utils.ObservableList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -40,24 +41,22 @@ public class InputProcessor extends InputAdapter {
 
 				case SELECT:
 					if (isCtrlPressed()) {
-						Object obj = SelectionManager.instance().getMouseOverObject();
-						SelectionManager.instance().addSelectedObject(obj);
+						SpriteModel sprite = SelectionManager.instance().getMouseOverSprite();
+						SelectionManager.instance().select(sprite, false);
 
 					} else {
 						Vector2 p = rdr.st2w(x, y);
-						List<Object> objs = SelectionManager.instance().getSelectedObjects();
+						List<SpriteModel> sprites = SelectionManager.instance().getSelectedSprites();
 
-						for (Object obj : objs) {
-							if (obj instanceof Measurable) {
-								dragAction = DragHelper.getAction((Measurable)obj, p, rdr.sd2w(10, 10));
-								if (dragAction != DragActions.NONE)
-									break;
-							}
+						for (SpriteModel sprite : sprites) {
+							dragAction = DragHelper.getAction(sprite, p, rdr.sd2w(10, 10));
+							if (dragAction != DragActions.NONE)
+								break;
 						}
 
 						if (dragAction == DragActions.NONE) {
-							Object obj = SelectionManager.instance().getMouseOverObject();
-							SelectionManager.instance().setSelectedObject(obj);
+							SpriteModel sprite = SelectionManager.instance().getMouseOverSprite();
+							SelectionManager.instance().select(sprite, true);
 						}
 					}
 					break;
@@ -85,64 +84,61 @@ public class InputProcessor extends InputAdapter {
 
 		} else if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			Vector2 delta = rdr.sd2w(x - lastTouch.x, lastTouch.y - y);
-			List<Object> objs = SelectionManager.instance().getSelectedObjects();
+			List<SpriteModel> sprites = SelectionManager.instance().getSelectedSprites();
 			float dx = delta.x;
 			float dy = delta.y;
 
-			for (Object obj : objs) {
-				if (obj instanceof Measurable) {
-					Measurable m = (Measurable)obj;
-					float mx = m.getX();
-					float my = m.getY();
-					float mw = m.getWidth();
-					float mh = m.getHeight();
+			for (SpriteModel sp : sprites) {
+				float spX = sp.getX();
+				float spY = sp.getY();
+				float spW = sp.getWidth();
+				float spH = sp.getHeight();
 
-					switch (dragAction) {
-						case SHAPE:
-							m.setPosition(mx + dx, my + dy);
-							break;
+				switch (dragAction) {
+					case SHAPE:
+						sp.setPosition(spX + dx, spY + dy);
+						break;
 
-						case HANDLE_BL:
-							dy = dx / (mw/mh);
-							m.setSize(mw - dx, mh - dy);
-							m.setPosition(mx + dx, my + dy);
-							break;
+					case HANDLE_BL:
+						dy = dx / (spW/spH);
+						sp.setSize(spW - dx, spH - dy);
+						sp.setPosition(spX + dx, spY + dy);
+						break;
 
-						case HANDLE_BM:
-							m.setSize(mw, mh - dy);
-							m.setPosition(mx, my + dy);
-							break;
+					case HANDLE_BM:
+						sp.setSize(spW, spH - dy);
+						sp.setPosition(spX, spY + dy);
+						break;
 
-						case HANDLE_BR:
-							dy = -dx / (mw/mh);
-							m.setSize(mw + dx, mh - dy);
-							m.setPosition(mx, my + dy);
-							break;
+					case HANDLE_BR:
+						dy = -dx / (spW/spH);
+						sp.setSize(spW + dx, spH - dy);
+						sp.setPosition(spX, spY + dy);
+						break;
 
-						case HANDLE_TL:
-							dy = -dx / (mw/mh);
-							m.setSize(mw - dx, mh + dy);
-							m.setPosition(mx + dx, my);
-							break;
+					case HANDLE_TL:
+						dy = -dx / (spW/spH);
+						sp.setSize(spW - dx, spH + dy);
+						sp.setPosition(spX + dx, spY);
+						break;
 
-						case HANDLE_TM:
-							m.setSize(mw, mh + dy);
-							break;
+					case HANDLE_TM:
+						sp.setSize(spW, spH + dy);
+						break;
 
-						case HANDLE_TR:
-							dy = dx / (mw/mh);
-							m.setSize(mw + dx, mh + dy);
-							break;
+					case HANDLE_TR:
+						dy = dx / (spW/spH);
+						sp.setSize(spW + dx, spH + dy);
+						break;
 
-						case HANDLE_ML:
-							m.setSize(mw - dx, mh);
-							m.setPosition(mx + dx, my);
-							break;
+					case HANDLE_ML:
+						sp.setSize(spW - dx, spH);
+						sp.setPosition(spX + dx, spY);
+						break;
 
-						case HANDLE_MR:
-							m.setSize(mw + dx, mh);
-							break;
-					}
+					case HANDLE_MR:
+						sp.setSize(spW + dx, spH);
+						break;
 				}
 			}
 		}
@@ -159,7 +155,7 @@ public class InputProcessor extends InputAdapter {
 				LayerModel layer = LayersManager.instance().getWorkingLayer();
 				if (layer != null) {
 					Vector2 p = rdr.st2w(x, y);
-					SelectionManager.instance().setMouseOverObject(pickLayerChild(layer, p));
+					SelectionManager.instance().setMouseOverSprite(pickSprite(layer, p));
 				}
 				break;
 		}
@@ -198,11 +194,12 @@ public class InputProcessor extends InputAdapter {
 		return Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
 	}
 
-	private Measurable pickLayerChild(LayerModel layer, Vector2 p) {
-		for (int i=layer.size()-1; i>=0; i--) {
-			LayerChild child = layer.get(i);
-			if (child instanceof Measurable && DragHelper.isOver((Measurable)child, p))
-				return (Measurable)child;
+	private SpriteModel pickSprite(LayerModel layer, Vector2 p) {
+		ObservableList<SpriteModel> sprites = layer.getSprites();
+		for (int i=sprites.size()-1; i>=0; i--) {
+			SpriteModel sprite = sprites.get(i);
+			if (DragHelper.isOver(sprite, p))
+				return sprite;
 		}
 		return null;
 	}

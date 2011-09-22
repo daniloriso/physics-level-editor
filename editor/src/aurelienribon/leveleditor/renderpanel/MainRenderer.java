@@ -14,7 +14,7 @@ import aurelienribon.leveleditor.renderpanel.modelrenderers.LayerRenderer;
 import aurelienribon.leveleditor.renderpanel.modelrenderers.SpriteRenderer;
 import aurelienribon.libgdx.Renderer2D;
 import aurelienribon.utils.ChangeListener;
-import aurelienribon.utils.ObservableList.ListChangedListener;
+import aurelienribon.utils.ObservableList.ListChangeListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -36,15 +36,15 @@ public class MainRenderer extends Renderer2D {
 		setWorldViewport(20, 20);
 		setWorldViewportUniformToFill();
 
-		for (LayerModel layer : LayersManager.instance().getAll())
+		for (LayerModel layer : LayersManager.instance().getList().getAll())
 			layerRdrsMap.put(layer, new LayerRenderer(layer));
 			
-		LayersManager.instance().addListChangedListener(layersListChangedListener);
-		AssetsManager.instance().addListChangedListener(assetsListChangedListener);
+		LayersManager.instance().getList().addListChangedListener(layersListChangedListener);
+		AssetsManager.instance().getList().addListChangedListener(assetsListChangedListener);
 		TempSpriteManager.instance().addChangeListener(tempSpriteChangeListener);
 	}
 
-	private final ListChangedListener<LayerModel> layersListChangedListener = new ListChangedListener() {
+	private final ListChangeListener<LayerModel> layersListChangedListener = new ListChangeListener() {
 		@Override
 		public void elementAdded(Object source, int idx, Object elem) {
 			LayerModel layer = (LayerModel)elem;
@@ -58,7 +58,7 @@ public class MainRenderer extends Renderer2D {
 		}
 	};
 
-	private final ListChangedListener<AssetInfo> assetsListChangedListener = new ListChangedListener() {
+	private final ListChangeListener<AssetInfo> assetsListChangedListener = new ListChangeListener() {
 		@Override
 		public void elementAdded(Object source, int idx, Object elem) {
 			TempSpriteManager.instance().reload();
