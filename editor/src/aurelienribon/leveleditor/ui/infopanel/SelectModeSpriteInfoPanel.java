@@ -107,7 +107,6 @@ public class SelectModeSpriteInfoPanel extends InfoPanelChild {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        updateBtn = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         hField = new javax.swing.JTextField();
         xField = new javax.swing.JTextField();
@@ -119,19 +118,10 @@ public class SelectModeSpriteInfoPanel extends InfoPanelChild {
         jLabel5 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         wField = new javax.swing.JTextField();
+        updateBtn = new javax.swing.JButton();
+        uniSizeBtn = new javax.swing.JButton();
 
         setOpaque(false);
-
-        updateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_edit.png"))); // NOI18N
-        updateBtn.setText("Update");
-        updateBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        updateBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
-        updateBtn.setOpaque(false);
-        updateBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateBtnActionPerformed(evt);
-            }
-        });
 
         jPanel1.setOpaque(false);
 
@@ -230,13 +220,37 @@ public class SelectModeSpriteInfoPanel extends InfoPanelChild {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        updateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_edit.png"))); // NOI18N
+        updateBtn.setText("Update");
+        updateBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        updateBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        updateBtn.setOpaque(false);
+        updateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateBtnActionPerformed(evt);
+            }
+        });
+
+        uniSizeBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aurelienribon/leveleditor/ui/gfx/ic_shape.png"))); // NOI18N
+        uniSizeBtn.setText("Uniformize size");
+        uniSizeBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        uniSizeBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        uniSizeBtn.setOpaque(false);
+        uniSizeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uniSizeBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+                .addComponent(uniSizeBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(updateBtn)
                 .addContainerGap())
         );
@@ -244,7 +258,9 @@ public class SelectModeSpriteInfoPanel extends InfoPanelChild {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(32, Short.MAX_VALUE)
-                .addComponent(updateBtn)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(updateBtn)
+                    .addComponent(uniSizeBtn))
                 .addContainerGap())
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -269,6 +285,13 @@ public class SelectModeSpriteInfoPanel extends InfoPanelChild {
 		}
 	}//GEN-LAST:event_updateBtnActionPerformed
 
+	private void uniSizeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uniSizeBtnActionPerformed
+		for (SpriteModel model : models) {
+			float ratio = model.getAsset().getSizeRatio();
+			model.setSize(model.getWidth(), model.getWidth() / ratio);
+		}
+	}//GEN-LAST:event_uniSizeBtnActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField hField;
     private javax.swing.JLabel jLabel1;
@@ -278,6 +301,7 @@ public class SelectModeSpriteInfoPanel extends InfoPanelChild {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField rField;
+    private javax.swing.JButton uniSizeBtn;
     private javax.swing.JButton updateBtn;
     private javax.swing.JTextField wField;
     private javax.swing.JTextField xField;

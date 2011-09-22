@@ -28,7 +28,7 @@ public class TempSpriteManager extends ChangeableObject {
 
 	public void addSpriteToWorkingLayer() {
 		LayerModel layer = LayersManager.instance().getWorkingLayer();
-		if (layer != null) {
+		if (layer != null && tempSprite != null) {
 			layer.add(tempSprite);
 			reload();
 		}
