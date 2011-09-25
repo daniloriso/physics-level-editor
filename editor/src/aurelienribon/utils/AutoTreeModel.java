@@ -2,7 +2,6 @@ package aurelienribon.utils;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
@@ -13,9 +12,8 @@ import javax.swing.tree.TreePath;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com
  */
-public abstract class BaseTreeModel implements TreeModel {
+public abstract class AutoTreeModel implements TreeModel {
 	private final Map<Object, TreePath> pathsMap = new HashMap<Object, TreePath>(100);
-	private final Map<Class, BaseTreeDataModel> dataModelsMap = new HashMap<Class, BaseTreeDataModel>();
 	private final EventListenerList listeners = new EventListenerList();
 
 	public Map<Object, TreePath> getPathsMap() {
@@ -36,19 +34,24 @@ public abstract class BaseTreeModel implements TreeModel {
 	// Registrations
 	// -------------------------------------------------------------------------
 
-	public void registerDataModel(Class modelClass, BaseTreeDataModel dataModel) {
-		dataModelsMap.put(modelClass, dataModel);
+	public void registerRoot(Object root) {
+		assert root != null;
+		assert !pathsMap.containsKey(root);
+		pathsMap.put(root, new TreePath(new Object[] {root}));
+
+		if (root instanceof Changeable)
+			((Changeable)root).addChangeListener(changeListener);
+
+		if (root instanceof ObservableListsHolder)
+			for (int i=0, n=((ObservableListsHolder)root).getObservableListCount(); i<n; i++)
+				registerList(root, ((ObservableListsHolder)root).getObservableList(i));
 	}
 
-	protected void registerElement(Object parent, Object child) {
+	private void registerElement(Object parent, Object child) {
+		assert parent != null;
 		assert child != null;
 		assert pathsMap.containsKey(parent);
-		assert dataModelsMap.containsKey(child.getClass());
-
-		if (parent == null) {
-			pathsMap.put(child, new TreePath(new Object[] {child}));
-			return;
-		}
+		assert !pathsMap.containsKey(child);
 
 		Object[] parentPath = pathsMap.get(parent).getPath();
 		Object[] childPath = new Object[parentPath.length+1];
@@ -59,33 +62,32 @@ public abstract class BaseTreeModel implements TreeModel {
 		if (child instanceof Changeable)
 			((Changeable)child).addChangeListener(changeListener);
 
-		List<ObservableList> lists = dataModelsMap.get(child.getClass()).getLists(child);
-		for (ObservableList list : lists)
-			registerList(child, list);
+		if (child instanceof ObservableListsHolder)
+			for (int i=0, n=((ObservableListsHolder)child).getObservableListCount(); i<n; i++)
+				registerList(child, ((ObservableListsHolder)child).getObservableList(i));
 	}
 
-	protected void unregisterElement(Object elem) {
+	private void unregisterElement(Object elem) {
 		assert elem != null;
 		assert pathsMap.containsKey(elem);
-		assert dataModelsMap.containsKey(elem.getClass());
 		pathsMap.remove(elem);
 
 		if (elem instanceof Changeable)
 			((Changeable)elem).removeChangeListener(changeListener);
-		
-		List<ObservableList> lists = dataModelsMap.get(elem.getClass()).getLists(elem);
-		for (ObservableList list : lists)
-			registerList(elem, list);
+
+		if (elem instanceof ObservableListsHolder)
+			for (int i=0, n=((ObservableListsHolder)elem).getObservableListCount(); i<n; i++)
+				unregisterList(((ObservableListsHolder)elem).getObservableList(i));
 	}
 
-	protected void registerList(Object parent, ObservableList list) {
+	private void registerList(Object parent, ObservableList list) {
 		assert list != null;
 		list.addListChangedListener(listChangeListener);
 		for (Object elem : list.getAll())
 			registerElement(parent, elem);
 	}
 
-	protected void unregisterList(ObservableList list) {
+	private void unregisterList(ObservableList list) {
 		assert list != null;
 		list.removeListChangedListener(listChangeListener);
 		for (Object elem : list.getAll())
@@ -122,7 +124,8 @@ public abstract class BaseTreeModel implements TreeModel {
 	// -------------------------------------------------------------------------
 
 	private final ChangeListener changeListener = new ChangeListener() {
-		@Override public void propertyChanged(Object source, String propertyName) {
+		@Override
+		public void propertyChanged(Object source, String propertyName) {
 			fireNodeChanged(source);
 		}
 	};

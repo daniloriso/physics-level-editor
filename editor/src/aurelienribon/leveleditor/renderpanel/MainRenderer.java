@@ -27,8 +27,8 @@ import java.util.Map;
  */
 public class MainRenderer extends Renderer2D {
 	private final SpriteBatch batch = new SpriteBatch();
-	private final PrimitiveDrawer drawer = new PrimitiveDrawer();
-	private final BoundingBoxDrawer bbDrawer = new BoundingBoxDrawer(this, drawer);
+	private final PrimitiveDrawer primitiveDrawer = new PrimitiveDrawer();
+	private final BoundingBoxDrawer boundingBoxDrawer = new BoundingBoxDrawer(this, primitiveDrawer);
 	private final Map<LayerModel, LayerRenderer> layerRdrsMap = new LinkedHashMap<LayerModel, LayerRenderer>();
 	private SpriteRenderer tempSpriteRdr;
 
@@ -37,18 +37,26 @@ public class MainRenderer extends Renderer2D {
 		setWorldViewportUniformToFill();
 
 		for (LayerModel layer : LayersManager.instance().getList().getAll())
-			layerRdrsMap.put(layer, new LayerRenderer(layer));
+			layerRdrsMap.put(layer, new LayerRenderer(this, layer));
 			
 		LayersManager.instance().getList().addListChangedListener(layersListChangedListener);
 		AssetsManager.instance().getList().addListChangedListener(assetsListChangedListener);
 		TempSpriteManager.instance().addChangeListener(tempSpriteChangeListener);
 	}
 
+	public PrimitiveDrawer getPrimitiveDrawer() {
+		return primitiveDrawer;
+	}
+
+	public BoundingBoxDrawer getBoundingBoxDrawer() {
+		return boundingBoxDrawer;
+	}
+
 	private final ListChangeListener<LayerModel> layersListChangedListener = new ListChangeListener() {
 		@Override
 		public void elementAdded(Object source, int idx, Object elem) {
 			LayerModel layer = (LayerModel)elem;
-			layerRdrsMap.put(layer, new LayerRenderer(layer));
+			layerRdrsMap.put(layer, new LayerRenderer(MainRenderer.this, layer));
 		}
 
 		@Override
@@ -75,7 +83,7 @@ public class MainRenderer extends Renderer2D {
 		public void propertyChanged(Object source, String propertyName) {
 			SpriteModel sprite = TempSpriteManager.instance().getTempSprite();
 			if (sprite != null) {
-				tempSpriteRdr = new SpriteRenderer(sprite);
+				tempSpriteRdr = new SpriteRenderer(MainRenderer.this, sprite);
 			} else {
 				tempSpriteRdr = null;
 			}
@@ -107,14 +115,12 @@ public class MainRenderer extends Renderer2D {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		for (LayerRenderer rdr : layerRdrsMap.values())
-			rdr.render(batch);
+			rdr.render(gl, batch);
 		if (itMode == InteractionModes.ADD_SPRITES && tempSpriteRdr != null)
 			tempSpriteRdr.render(batch);
 		batch.end();
 
 		camera.apply(gl);
-		if (itMode == InteractionModes.SELECT)
-			bbDrawer.drawBoundingBoxes(gl);
-		drawer.drawOriginAxis(2);
+		primitiveDrawer.drawOriginAxis(2);
 	}
 }

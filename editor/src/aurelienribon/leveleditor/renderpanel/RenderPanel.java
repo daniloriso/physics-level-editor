@@ -13,6 +13,10 @@ public class RenderPanel implements ApplicationListener {
 	@Override public void create() {
 		this.renderer = new MainRenderer();
 		Gdx.input.setInputProcessor(new InputProcessor(renderer));
+
+		GL10 gl = Gdx.gl10;
+		gl.glClearColor(1,1,1,1);
+		gl.glEnable(GL10.GL_BLEND);
 	}
 
 	@Override
@@ -23,7 +27,6 @@ public class RenderPanel implements ApplicationListener {
 	public void render() {
 		renderer.update();
 		GL10 gl = Gdx.gl10;
-		gl.glClearColor(1,1,1,1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		renderer.render(gl);
 	}

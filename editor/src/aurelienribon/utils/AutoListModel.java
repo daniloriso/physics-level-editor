@@ -8,11 +8,11 @@ import javax.swing.event.ListDataListener;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com
  */
-public class MutableListModel implements ListModel {
+public class AutoListModel implements ListModel {
 	private final EventListenerList listeners = new EventListenerList();
 	private final ObservableList model;
 
-	public MutableListModel(ObservableList model) {
+	public AutoListModel(ObservableList model) {
 		this.model = model;
 		model.addListChangedListener(modelListener);
 

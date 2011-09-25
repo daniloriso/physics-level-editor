@@ -3,6 +3,7 @@ package aurelienribon.leveleditor.models;
 import aurelienribon.leveleditor.models.behaviors.Hideable;
 import aurelienribon.leveleditor.models.behaviors.Measurable;
 import aurelienribon.leveleditor.models.behaviors.Nameable;
+import aurelienribon.leveleditor.models.behaviors.Selectable;
 import aurelienribon.utils.ChangeListener;
 import aurelienribon.utils.Changeable;
 import aurelienribon.utils.InnerChangeableObject;
@@ -10,23 +11,16 @@ import aurelienribon.utils.InnerChangeableObject;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class SpriteModel implements Measurable, Changeable, Nameable, Hideable {
-	private final LayerModel parent;
+public class SpriteModel implements Measurable, Changeable, Nameable, Hideable, Selectable {
 	private final AssetInfo asset;
 
-	public SpriteModel(LayerModel parent, AssetInfo asset) {
-		assert parent != null;
+	public SpriteModel(AssetInfo asset) {
 		assert asset != null;
-		this.parent = parent;
 		this.asset = asset;
 	}
 
 	public AssetInfo getAsset() {
 		return asset;
-	}
-
-	public LayerModel getParent() {
-		return parent;
 	}
 
 	// -------------------------------------------------------------------------
@@ -137,5 +131,22 @@ public class SpriteModel implements Measurable, Changeable, Nameable, Hideable {
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 		cho.firePropertyChanged(this, "visible");
+	}
+
+	// -------------------------------------------------------------------------
+	// Selectable impl.
+	// -------------------------------------------------------------------------
+
+	private boolean selected = false;
+
+	@Override
+	public boolean isSelected() {
+		return selected;
+	}
+
+	@Override
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+		cho.firePropertyChanged(this, "selected");
 	}
 }

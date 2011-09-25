@@ -3,7 +3,7 @@ package aurelienribon.leveleditor.ui;
 import aurelienribon.leveleditor.AssetsManager;
 import aurelienribon.leveleditor.models.AssetInfo;
 import aurelienribon.leveleditor.utils.AssetLoader;
-import aurelienribon.utils.MutableListModel;
+import aurelienribon.utils.AutoListModel;
 import java.awt.Component;
 import java.io.File;
 import javax.swing.ImageIcon;
@@ -23,7 +23,7 @@ public class ManageAssetsDialog extends javax.swing.JDialog {
 	public ManageAssetsDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
-		assetsList.setModel(new MutableListModel(AssetsManager.instance().getList()));
+		assetsList.setModel(new AutoListModel(AssetsManager.instance().getList()));
 		assetsList.setCellRenderer(listCellRdr);
 	}
 

@@ -1,14 +1,10 @@
 package aurelienribon.leveleditor.renderpanel.drawers;
 
-import aurelienribon.leveleditor.SelectionManager;
-import aurelienribon.leveleditor.models.SpriteModel;
 import aurelienribon.leveleditor.models.behaviors.Measurable;
-import aurelienribon.leveleditor.renderpanel.Theme;
 import aurelienribon.libgdx.Renderer2D;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.Vector2;
-import java.util.List;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com
@@ -23,18 +19,12 @@ public class BoundingBoxDrawer {
 		this.drawer = drawer;
 	}
 
-	public void drawBoundingBoxes(GL10 gl) {
-		gl.glEnable(GL10.GL_BLEND);
+	public void drawBoundingBox(GL10 gl, Measurable m, Color color) {
+		drawBoundingBox(gl, m, false, color);
+	}
 
-		List<SpriteModel> sprites = SelectionManager.instance().getSelectedSprites();
-		SpriteModel moSprite = SelectionManager.instance().getMouseOverSprite();
-
-		if (SelectionManager.instance().getSelectedObjectsType() != null)
-			for (SpriteModel sprite : sprites)
-				drawBoundingBox(gl, sprite, true, Theme.SELECTED_BOUNDINGBOX_COLOR);
-
-		if (moSprite != null && !sprites.contains(moSprite))
-			drawBoundingBox(gl, moSprite, false, Theme.MOUSEOVER_BOUNDINGBOX_COLOR);
+	public void drawBoundingBoxWithHandles(GL10 gl, Measurable m, Color color) {
+		drawBoundingBox(gl, m, true, color);
 	}
 
 	private void drawBoundingBox(GL10 gl, Measurable m, boolean showHandles, Color color) {

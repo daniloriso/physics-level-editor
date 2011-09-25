@@ -2,6 +2,7 @@ package aurelienribon.leveleditor;
 
 import aurelienribon.leveleditor.models.LayerModel;
 import aurelienribon.leveleditor.models.SpriteModel;
+import aurelienribon.leveleditor.models.behaviors.Selectable;
 import aurelienribon.utils.ChangeableObject;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +42,9 @@ public class SelectionManager extends ChangeableObject {
 	 */
 	public void select(Object obj, boolean override) {
 		if (override) {
+			for (Object selObj : selectedObjects)
+				if (selObj instanceof Selectable)
+					((Selectable)selObj).setSelected(false);
 			selectedSprites.clear();
 			selectedObjects.clear();
 		}
@@ -54,10 +58,14 @@ public class SelectionManager extends ChangeableObject {
 			if (obj instanceof SpriteModel)
 				selectedSprites.remove((SpriteModel)obj);
 			selectedObjects.remove(obj);
+			if (obj instanceof Selectable)
+				((Selectable)obj).setSelected(false);
 		} else {
 			if (obj instanceof SpriteModel)
 				selectedSprites.add((SpriteModel)obj);
 			selectedObjects.add(obj);
+			if (obj instanceof Selectable)
+				((Selectable)obj).setSelected(true);
 		}
 
 		firePropertyChanged("selectedObjects");

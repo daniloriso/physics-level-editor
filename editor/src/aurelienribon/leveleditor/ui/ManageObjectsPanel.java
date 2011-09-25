@@ -5,8 +5,7 @@ import aurelienribon.leveleditor.SelectionManager;
 import aurelienribon.leveleditor.models.SpriteModel;
 import aurelienribon.leveleditor.models.LayerModel;
 import aurelienribon.leveleditor.models.behaviors.Nameable;
-import aurelienribon.utils.BaseTreeDataModel;
-import aurelienribon.utils.BaseTreeModel;
+import aurelienribon.utils.AutoTreeModel;
 import aurelienribon.utils.ChangeListener;
 import aurelienribon.utils.ObservableList;
 import java.awt.BorderLayout;
@@ -44,48 +43,22 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
     public ManageObjectsPanel() {
 		iconsMap.put(LayerModel.class, new ImageIcon(ManageObjectsPanel.class.getResource("gfx/ic_layers.png")));
 		iconsMap.put(SpriteModel.class, new ImageIcon(ManageObjectsPanel.class.getResource("gfx/ic_texture.png")));
-
+		
         initComponents();
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 		tree.setModel(treeModel);
 		tree.setCellRenderer(treeCellRenderer);
 		tree.setCellEditor(treeCellEditor);
+		tree.addTreeSelectionListener(treeSelectionListener);
+		SelectionManager.instance().addChangeListener(selectionManagerChangeListener);
 		updateUiState();
 
-		tree.addTreeSelectionListener(new TreeSelectionListener() {
-			@Override public void valueChanged(TreeSelectionEvent e) {
-				SelectionManager.instance().select(null, true);
-				for (Object obj : convertSelectedPaths())
-					SelectionManager.instance().select(obj, false);
-				updateUiState();
-			}
-		});
-
-		tree.getModel().addTreeModelListener(new TreeModelListener() {
+		treeModel.addTreeModelListener(new TreeModelListener() {
 			@Override public void treeNodesChanged(TreeModelEvent e) {}
 			@Override public void treeNodesRemoved(TreeModelEvent e) {}
 			@Override public void treeStructureChanged(TreeModelEvent e) {}
 			@Override public void treeNodesInserted(TreeModelEvent e) {
 				tree.expandPath(e.getTreePath());
-			}
-		});
-
-		SelectionManager.instance().addChangeListener(new ChangeListener() {
-			@Override public void propertyChanged(Object source, String propertyName) {
-				if (propertyName.equals("selectedObjects")) {
-					/*List<Object> selObjs = SelectionManager.instance().getSelectedObjects();
-					List<Object> selObjsTree = convertSelectedPaths();
-					List<TreePath> toAdd = new ArrayList<TreePath>();
-					List<TreePath> toRem = new ArrayList<TreePath>();
-					for (Object obj : selObjs)
-						if (!selObjsTree.contains(obj))
-							toAdd.add(new TreePath(treeModel.getPathsMap().get(obj)));
-					for (Object obj : selObjsTree)
-						if (!selObjs.contains(obj))
-							toRem.add(new TreePath(treeModel.getPathsMap().get(obj)));
-					tree.addSelectionPaths(toAdd.toArray(new TreePath[0]));
-					tree.removeSelectionPaths(toRem.toArray(new TreePath[0]));*/
-				}
 			}
 		});
     }
@@ -296,18 +269,46 @@ public class ManageObjectsPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
 	// -------------------------------------------------------------------------
+	// TreeSelectionListener
+	// -------------------------------------------------------------------------
+
+	private final TreeSelectionListener treeSelectionListener = new TreeSelectionListener() {
+		@Override public void valueChanged(TreeSelectionEvent e) {
+			SelectionManager.instance().removeChangeListener(selectionManagerChangeListener);
+			SelectionManager.instance().select(null, true);
+			for (Object obj : convertSelectedPaths())
+				SelectionManager.instance().select(obj, false);
+			updateUiState();
+			SelectionManager.instance().addChangeListener(selectionManagerChangeListener);
+		}
+	};
+
+	private final ChangeListener selectionManagerChangeListener = new ChangeListener() {
+		@Override public void propertyChanged(Object source, String propertyName) {
+			if (propertyName.equals("selectedObjects")) {
+				tree.removeTreeSelectionListener(treeSelectionListener);
+				List<Object> selObjs = SelectionManager.instance().getSelectedObjects();
+				List<Object> selObjsTree = convertSelectedPaths();
+				for (Object obj : selObjs)
+					if (!selObjsTree.contains(obj))
+						tree.addSelectionPath(treeModel.getPathsMap().get(obj));
+				for (Object obj : selObjsTree)
+					if (!selObjs.contains(obj))
+						tree.removeSelectionPath(treeModel.getPathsMap().get(obj));
+				tree.addTreeSelectionListener(treeSelectionListener);
+			}
+		}
+	};
+
+	// -------------------------------------------------------------------------
 	// TreeModel
 	// -------------------------------------------------------------------------
 
-	private final BaseTreeModel treeModel = new BaseTreeModel() {
+	private final AutoTreeModel treeModel = new AutoTreeModel() {
 		{
-			registerDataModel(LayersManager.class, new BaseTreeDataModel<LayersManager>() {
-				@Override public List<ObservableList> getLists(final LayersManager model) {
-					return new ArrayList<ObservableList>() {{this.add(model.getList());}};
-				}});
-			registerElement(null, LayersManager.instance());
+			registerRoot(LayersManager.instance());
 		}
-
+		
 		@Override
 		public Object getRoot() {
 			return LayersManager.instance();

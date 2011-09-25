@@ -29,7 +29,7 @@ public class TempSpriteManager extends ChangeableObject {
 
 	public void addSpriteToWorkingLayer() {
 		if (tempSprite != null) {
-			LayerModel layer = tempSprite.getParent();
+			LayerModel layer = LayersManager.instance().getWorkingLayer();
 			layer.getSprites().add(tempSprite);
 			reload();
 		}
@@ -72,8 +72,7 @@ public class TempSpriteManager extends ChangeableObject {
 
 	private SpriteModel createSprite(AssetInfo asset) {
 		assert asset != null;
-		LayerModel layer = LayersManager.instance().getWorkingLayer();
-		SpriteModel sprite = new SpriteModel(layer, asset);
+		SpriteModel sprite = new SpriteModel(asset);
 		sprite.setSize(asset.getWidth()/50f, asset.getHeight()/50f);
 		return sprite;
 	}

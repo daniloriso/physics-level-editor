@@ -3,12 +3,13 @@ package aurelienribon.leveleditor;
 import aurelienribon.utils.ObservableList;
 import aurelienribon.leveleditor.models.LayerModel;
 import aurelienribon.utils.ChangeableObject;
+import aurelienribon.utils.ObservableListsHolder;
 import aurelienribon.utils.ObservableList.ListChangeListener;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class LayersManager extends ChangeableObject {
+public class LayersManager extends ChangeableObject implements ObservableListsHolder {
 	// -------------------------------------------------------------------------
 	// Singleton
 	// -------------------------------------------------------------------------
@@ -49,5 +50,19 @@ public class LayersManager extends ChangeableObject {
 	public void setWorkingLayer(LayerModel workingLayer) {
 		this.workingLayer = workingLayer;
 		firePropertyChanged("workingLayer");
+	}
+
+	// -------------------------------------------------------------------------
+	// ObservableListsHolder impl.
+	// -------------------------------------------------------------------------
+
+	@Override
+	public int getObservableListCount() {
+		return 1;
+	}
+
+	@Override
+	public ObservableList getObservableList(int idx) {
+		return list;
 	}
 }
